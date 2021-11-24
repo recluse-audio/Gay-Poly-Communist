@@ -9,7 +9,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "GaySynth.h"
+#include "../Synth/GaySynth.h"
 
 //==============================================================================
 /**

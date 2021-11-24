@@ -10,7 +10,7 @@
 
 #pragma once
 #include <JuceHeader.h>
-#include "WaveTableVector.h"
+#include "../WaveTable/WaveTableVector.h"
 
 
 //==============================================================================

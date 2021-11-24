@@ -7,55 +7,53 @@
   <MAINGROUP id="IbflzF" name="Gay Poly Communist">
     <GROUP id="{CFF36181-D2F0-986C-BA47-E1BB90F956DE}" name="Source">
       <GROUP id="{16009940-43FB-6390-6EF6-FE52B8E9CDA3}" name="Components">
+        <FILE id="E8ts8J" name="ParamSliders.h" compile="0" resource="0" file="Source/Components/ParamSliders.h"/>
+        <FILE id="ZOQZRp" name="WavetableVisualizer.cpp" compile="1" resource="0"
+              file="Source/Components/WavetableVisualizer.cpp"/>
+        <FILE id="bWHhOF" name="WavetableVisualizer.h" compile="0" resource="0"
+              file="Source/Components/WavetableVisualizer.h"/>
+        <FILE id="CxZWi9" name="ModSliders.h" compile="0" resource="0" file="Source/Components/ModSliders.h"/>
         <GROUP id="{4A67719B-FB2A-ABE4-3370-71829E76523F}" name="EnvelopeComponent">
-          <FILE id="bkDeWg" name="EnvelopeControlPoint.h" compile="0" resource="0"
-                file="Source/EnvelopeControlPoint.h"/>
-          <FILE id="rZcHon" name="EnvelopeVisualizer.cpp" compile="1" resource="0"
-                file="Source/EnvelopeVisualizer.cpp"/>
-          <FILE id="WknkLA" name="EnvelopeVisualizer.h" compile="0" resource="0"
-                file="Source/EnvelopeVisualizer.h"/>
+          <FILE id="RAg5VZ" name="EnvelopeVisualizer.cpp" compile="1" resource="0"
+                file="Source/Components/EnvelopeComponent/EnvelopeVisualizer.cpp"/>
+          <FILE id="tx3w9n" name="EnvelopeVisualizer.h" compile="0" resource="0"
+                file="Source/Components/EnvelopeComponent/EnvelopeVisualizer.h"/>
+          <FILE id="kOvs9q" name="EnvelopeControlPoint.h" compile="0" resource="0"
+                file="Source/Components/EnvelopeComponent/EnvelopeControlPoint.h"/>
         </GROUP>
-        <FILE id="Yk4ZUQ" name="ParamSliders.h" compile="0" resource="0" file="Source/ParamSliders.h"/>
-        <FILE id="ANgvOH" name="ModSliders.h" compile="0" resource="0" file="Source/ModSliders.h"/>
-        <FILE id="ppJbuw" name="WavetableVisualizer.cpp" compile="1" resource="0"
-              file="Source/WavetableVisualizer.cpp"/>
-        <FILE id="Q2oDiA" name="WavetableVisualizer.h" compile="0" resource="0"
-              file="Source/WavetableVisualizer.h"/>
       </GROUP>
       <GROUP id="{18CDEF89-1D66-4237-D3C5-534B8B3C56D2}" name="LookNFeel">
-        <FILE id="oeWuTr" name="ArtieFeel.cpp" compile="1" resource="0" file="Source/ArtieFeel.cpp"/>
-        <FILE id="s6q9oD" name="ArtieFeel.h" compile="0" resource="0" file="Source/ArtieFeel.h"/>
+        <FILE id="ecUmQQ" name="ArtieFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel/ArtieFeel.cpp"/>
+        <FILE id="lh2FoL" name="ArtieFeel.h" compile="0" resource="0" file="Source/LookAndFeel/ArtieFeel.h"/>
       </GROUP>
       <GROUP id="{34557F00-31F2-D788-E1EA-ECD8A1A73BA6}" name="Synth">
-        <FILE id="Um6FTT" name="GayOscillator.h" compile="0" resource="0" file="Source/GayOscillator.h"/>
-        <FILE id="HGD2KB" name="GaySynth.h" compile="0" resource="0" file="Source/GaySynth.h"/>
-        <FILE id="hV2hPk" name="GayVerb.h" compile="0" resource="0" file="Source/GayVerb.h"/>
-        <FILE id="DXLh9q" name="GayVoice.h" compile="0" resource="0" file="Source/GayVoice.h"/>
+        <FILE id="rWyedU" name="GaySynth.h" compile="0" resource="0" file="Source/Synth/GaySynth.h"/>
+        <FILE id="rKMTPT" name="GayVoice.h" compile="0" resource="0" file="Source/Synth/GayVoice.h"/>
+        <FILE id="LsbKj3" name="GayOscillator.h" compile="0" resource="0" file="Source/Synth/GayOscillator.h"/>
       </GROUP>
       <GROUP id="{A51FEACE-1059-FAF5-25C8-E299B238C78B}" name="Wavetable">
-        <FILE id="aoo1za" name="WaveTableLoader.h" compile="0" resource="0"
-              file="Source/WaveTableLoader.h"/>
-        <FILE id="jhzH6k" name="WaveTableVector.h" compile="0" resource="0"
-              file="Source/WaveTableVector.h"/>
-        <FILE id="NoRSiV" name="WaveTable.h" compile="0" resource="0" file="Source/WaveTable.h"/>
+        <FILE id="v9Pt73" name="WaveTableLoader.h" compile="0" resource="0"
+              file="Source/WaveTable/WaveTableLoader.h"/>
+        <FILE id="rGoCKo" name="WaveTableVector.h" compile="0" resource="0"
+              file="Source/WaveTable/WaveTableVector.h"/>
+        <FILE id="FGf9Io" name="WaveTable.h" compile="0" resource="0" file="Source/WaveTable/WaveTable.h"/>
       </GROUP>
       <GROUP id="{FDF19D77-032E-F4C2-37F2-E9B06447B059}" name="Processor">
-        <FILE id="vdIFi1" name="PluginProcessor.cpp" compile="1" resource="0"
-              file="Source/PluginProcessor.cpp"/>
-        <FILE id="nLiJpb" name="PluginProcessor.h" compile="0" resource="0"
-              file="Source/PluginProcessor.h"/>
+        <FILE id="VJDWt3" name="PluginProcessor.cpp" compile="1" resource="0"
+              file="Source/Processor/PluginProcessor.cpp"/>
+        <FILE id="KrUeXk" name="PluginProcessor.h" compile="0" resource="0"
+              file="Source/Processor/PluginProcessor.h"/>
       </GROUP>
       <GROUP id="{E93B1B7E-4121-0E68-A696-EAFA1C9C2FBD}" name="Editor">
-        <FILE id="caHo54" name="PluginEditor.cpp" compile="1" resource="0"
-              file="Source/PluginEditor.cpp"/>
-        <FILE id="LJSU9R" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+        <FILE id="DdDhSa" name="PluginEditor.cpp" compile="1" resource="0"
+              file="Source/Editor/PluginEditor.cpp"/>
+        <FILE id="gHZSDd" name="PluginEditor.h" compile="0" resource="0" file="Source/Editor/PluginEditor.h"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>
-    <VS2019 targetFolder="Builds/VisualStudio2019" externalLibraries="D:\JUCE_Projects\helm\builds\VisualStudio2019\x64\Release\VST3\Helm.lib"
-            extraLinkerFlags="D:\JUCE_Projects\helm\builds\VisualStudio2019\x64\Release\VST3\Helm.lib">
+    <VS2019 targetFolder="Builds/VisualStudio2019">
       <CONFIGURATIONS>
         <CONFIGURATION isDebug="1" name="Debug" targetName="Gay Poly Communist"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="Gay Poly Communist"/>

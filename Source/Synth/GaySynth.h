@@ -10,7 +10,7 @@
 
 #pragma once
 #include <JuceHeader.h>
-#include "PluginProcessor.h"
+#include "../Processor/PluginProcessor.h"
 #include "GayVoice.h"
 
 class GaySynth : public MPESynthesiser

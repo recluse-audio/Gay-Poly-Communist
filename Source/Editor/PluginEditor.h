@@ -9,12 +9,12 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "PluginProcessor.h"
-#include "ArtieFeel.h"
-#include "WavetableVisualizer.h"
-#include "ModSliders.h"
-#include "ParamSliders.h"
-#include "EnvelopeVisualizer.h"
+#include "../Processor/PluginProcessor.h"
+#include "../LookAndFeel/ArtieFeel.h"
+#include "../Components/WavetableVisualizer.h"
+#include "../Components/ModSliders.h"
+#include "../Components/ParamSliders.h"
+#include "../Components/EnvelopeComponent/EnvelopeVisualizer.h"
 
 
 

@@ -7,7 +7,7 @@
 */
 
 #include "PluginProcessor.h"
-#include "PluginEditor.h"
+#include "../Editor/PluginEditor.h"
 
 //==============================================================================
 GayPolyCommunistAudioProcessor::GayPolyCommunistAudioProcessor()

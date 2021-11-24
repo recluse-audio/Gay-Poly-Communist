@@ -12,7 +12,7 @@
 #include <JuceHeader.h>
 #include "GaySynth.h"
 #include "GayOscillator.h"
-#include "PluginProcessor.h"
+#include "../Processor/PluginProcessor.h"
 
 
 class GayVoice : public MPESynthesiserVoice

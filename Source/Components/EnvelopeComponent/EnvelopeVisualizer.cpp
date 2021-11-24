@@ -288,7 +288,7 @@ void EnvelopeVisualizer::mouseDrag(const MouseEvent& e)
 */
 void passADSR()
 {
-    audioProcessor.
+    //audioProcessor.
 }
 
 void EnvelopeVisualizer::putValuesInTable()
