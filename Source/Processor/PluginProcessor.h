@@ -10,6 +10,7 @@
 
 #include <JuceHeader.h>
 #include "../Synth/GaySynth.h"
+#include "WaveDatabase.h"
 
 //==============================================================================
 /**
@@ -60,7 +61,7 @@ public:
     juce::AudioProcessorValueTreeState& getValueTree() { return apvts; }
     juce::AudioProcessorValueTreeState::ParameterLayout createParameters();
 
-    WaveTableVector& getWaveVector();
+    WaveTableVector& getWaveVector(int oscNumber);
     GaySynth& getSynth();
 
     void shouldProcess(bool isProcessing);
@@ -68,16 +69,42 @@ public:
 
     float getRMS();
 
+    float getLFOSource();
+    float getEnvSource();
+    void setLFOSource(int source);
+    void setEnvSource(int source);
+
+    void setMappingLFO(bool lfoMapping, float source);
+    void setMappingEnv(bool envMapping, float source);
+    bool isMappingLFO();
+    bool isMappingEnv();
+    int getMappingLFO();
+
+    void toggleMidiTest(bool shouldToggle);
+    void triggerMidi(bool isNoteOn);
+
+    WaveDatabase& getWaveDatabase();
+
+    void loadWaveTables(const StringArray& filePath, int oscNum);
+
+    float getLFODepth(int lfoNum);
 private:
     GaySynth synth;
+
+    float lfoSource = 0.f;
+    float envSource = 0.f;
+    bool mappingLFO = false;
+    bool mappingEnv = false;
 
     juce::AudioProcessorValueTreeState apvts;
     juce::Atomic<bool> mustUpdateProcessing{ false };
     Atomic<bool> processing{ true };
-
-
+    Atomic<bool> noteOn{ false };
+    Atomic<bool> noteOff{ false };
 
     float RMS = 0.f;
+
+    WaveDatabase waveDatabase;
 
     void valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) override
     {

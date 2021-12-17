@@ -13,78 +13,93 @@
 GayPolyCommunistAudioProcessorEditor::GayPolyCommunistAudioProcessorEditor (GayPolyCommunistAudioProcessor& p)
     : AudioProcessorEditor (&p), audioProcessor (p)
 {
+    nameLabel = std::make_unique<Label>();
+    nameLabel->setText("GAY POLY COMMUNIST", NotificationType::dontSendNotification);
+    nameLabel->setLookAndFeel(&nameFeel);
+    nameLabel->setAlwaysOnTop(true);
+    addAndMakeVisible(nameLabel.get());
+    
 
     setLookAndFeel(&artieFeel);
     color1 = Colours::yellow;
     color2 = Colours::blue;
 
-    modLabel = std::make_unique<Label>();
-    modLabel->setText("|     Amp       ||     Filter     ||      Pitch      ||      Wave    |", NotificationType::dontSendNotification);
-    addAndMakeVisible(modLabel.get());
+    // params from value tree passed to osc component and assigned to sliders there
+    auto gainParams = StringArray({ "Gain 1", "Gain 1 LFO Source", "Gain 1 LFO Scale", "Gain 1 Env Source", "Gain 1 Env Scale", "Gain" });
+    auto pitchParams = StringArray({ "Pitch 1", "Pitch 1 LFO Source", "Pitch 1 LFO Scale", "Pitch 1 Env Source", "Pitch 1 Env Scale", "Pitch" });
+    auto waveParams = StringArray({ "Wave 1 Position", "Wave 1 LFO Source", "Wave 1 LFO Scale", "Wave 1 Env Source", "Wave 1 Env Scale", "Wave" });
+    oscillator1 = std::make_unique<OscillatorComponent>(1, audioProcessor, gainParams, pitchParams, waveParams);
+    addAndMakeVisible(oscillator1.get());
+    oscillator1->setColor(Colours::darkorange);
 
-    wavetableVisualizer = std::make_unique<WavetableVisualizer>(audioProcessor);
-    addAndMakeVisible(wavetableVisualizer.get());
+    auto gainParams2 = StringArray({ "Gain 2", "Gain 2 LFO Source", "Gain 2 LFO Scale", "Gain 2 Env Source", "Gain 2 Env Scale", "Gain" });
+    auto pitchParams2 = StringArray({ "Pitch 2", "Pitch 2 LFO Source", "Pitch 2 LFO Scale", "Pitch 2 Env Source", "Pitch 2 Env Scale", "Pitch" });
+    auto waveParams2 = StringArray({ "Wave 2 Position", "Wave 2 LFO Source", "Wave 2 LFO Scale", "Wave 2 Env Source", "Wave 2 Env Scale", "Wave" });
+    oscillator2 = std::make_unique<OscillatorComponent>(2, audioProcessor, gainParams2, pitchParams2, waveParams2);
+    addAndMakeVisible(oscillator2.get());
+    oscillator2->setColor(Colours::darkorange);
 
-    envVisual = std::make_unique<EnvelopeVisualizer>(audioProcessor);
-    addAndMakeVisible(envVisual.get());
+    auto lfoParams1 = StringArray({ "LFO Rate 1", "LFO Rate Env Source 1", "LFO Rate Env Scale 1", 
+        "LFO Depth 1", "LFO Depth Env Source 1", "LFO Depth Env Scale 1" });
+    lfoSlider1 = std::make_unique<LFOSlider>(lfoParams1, audioProcessor, 1.f);
+    lfoSlider1->setColor(Colours::red);
+    addAndMakeVisible(lfoSlider1.get());
 
-    //======================
-    auto modParams1 = StringArray({ "Amp LFO 1", "Filt LFO 1", "Pitch LFO 1", "Wave LFO 1" });
-    modSliders1 = std::make_unique<ModSliders>(audioProcessor, modParams1);
-    modSliders1->setColor(color1);
-    addAndMakeVisible(modSliders1.get());
+    auto lfoParams2 = StringArray({ "LFO Rate 2", "LFO Rate Env Source 2", "LFO Rate Env Scale 2",
+        "LFO Depth 2", "LFO Depth Env Source 2", "LFO Depth Env Scale 2" });
+    lfoSlider2 = std::make_unique<LFOSlider>(lfoParams2, audioProcessor, 2.f);
+    lfoSlider2->setColor(Colours::green);
+    addAndMakeVisible(lfoSlider2.get());
 
-    auto modParams2 = StringArray({ "Amp LFO 2", "Filt LFO 2", "Pitch LFO 2", "Wave LFO 2" });
-    modSliders2 = std::make_unique<ModSliders>(audioProcessor, modParams2);
-    modSliders2->setColor(color2);
-    addChildComponent(modSliders2.get());
+    auto lfoParams3 = StringArray({ "LFO Rate 3", "LFO Rate Env Source 3", "LFO Rate Env Scale 3",
+        "LFO Depth 3", "LFO Depth Env Source 3", "LFO Depth Env Scale 3" });
+    lfoSlider3 = std::make_unique<LFOSlider>(lfoParams3, audioProcessor, 3.f);
+    lfoSlider3->setColor(Colours::blue);
+    addAndMakeVisible(lfoSlider3.get());
 
-    //======================
-    auto envParams1 = StringArray({ "Filt Env 1", "Pitch Env 1", "Wave Env 1" });
-    envSliders1 = std::make_unique<ModSliders>(audioProcessor, envParams1);
-    envSliders1->setColor(color1);
-    addAndMakeVisible(envSliders1.get());
+    auto envParams1 = StringArray({ "ATTACK 1", "DECAY 1", "SUSTAIN 1", "RELEASE 1" });
+    envSlider1 = std::make_unique<EnvSliders>(audioProcessor, envParams1, 1.f);
+    envSlider1->setColor(Colours::cyan); // notice the american spelling menaing my class
+    addAndMakeVisible(envSlider1.get());
 
-    auto envParams2 = StringArray({ "Amp Env 2", "Filt Env 2", "Pitch Env 2", "Wave Env 2" });
-    envSliders2 = std::make_unique<ModSliders>(audioProcessor, envParams2);
-    envSliders2->setColor(color2);
-    addChildComponent(envSliders2.get());
+    auto envParams2 = StringArray({ "ATTACK 2", "DECAY 2", "SUSTAIN 2", "RELEASE 2" });
+    envSlider2 = std::make_unique<EnvSliders>(audioProcessor, envParams2, 2.f);
+    envSlider2->setColor(Colours::magenta);
+    addAndMakeVisible(envSlider2.get());
 
-    //======================
-    auto adsrParams1 = StringArray({ "ATTACK 1", "DECAY 1", "SUSTAIN 1", "RELEASE 1" });
-    adsrSliders1 = std::make_unique<ParamSliders>(audioProcessor, adsrParams1);
-    adsrSliders1->setColor(color1);
-    addAndMakeVisible(adsrSliders1.get());
-
-    auto adsrParams2 = StringArray({ "ATTACK 2", "DECAY 2", "SUSTAIN 2", "RELEASE 2" });
-    adsrSliders2 = std::make_unique<ParamSliders>(audioProcessor, adsrParams2);
-    adsrSliders2->setColor(color2);
-    addChildComponent(adsrSliders2.get());
-
-    //======================
-    auto lfoParams1 = StringArray({ "LFO 1 Rate", "LFO 1 Depth" });
-    lfoSliders1 = std::make_unique<ParamSliders>(audioProcessor, lfoParams1);
-    lfoSliders1->setColor(color1);
-    addAndMakeVisible(lfoSliders1.get());
-
-    auto lfoParams2 = StringArray({ "LFO 2 Rate", "LFO 2 Depth" });
-    lfoSliders2 = std::make_unique<ParamSliders>(audioProcessor, lfoParams2);
-    lfoSliders2->setColor(color2);
-    addChildComponent(lfoSliders2.get());
-
-    //======================
-    auto filtParams = StringArray({ "Filter Freq", "Filter Res" });
-    filtSliders = std::make_unique<ParamSliders>(audioProcessor, filtParams);
-    filtSliders->setColor(Colours::red);
-    addAndMakeVisible(filtSliders.get());
+    auto envParams3 = StringArray({ "ATTACK 3", "DECAY 3", "SUSTAIN 3", "RELEASE 3" });
+    envSlider3 = std::make_unique<EnvSliders>(audioProcessor, envParams3, 3.f);
+    envSlider3->setColor(Colours::yellow);
+    addAndMakeVisible(envSlider3.get());
 
 
+    auto filtParams = StringArray({ "Filter Freq", "Filter LFO Source", "Filter LFO Scale", "Filter Env Source", "Filter Env Scale", "Freq" });
+    filtSlider = std::make_unique<OscSlider>(filtParams, audioProcessor, true);
+    filtSlider->setSliderColor(Colours::aquamarine);
+    addAndMakeVisible(filtSlider.get());
 
-    initSliders();
-    initButtons();
+    auto resParams = StringArray({ "Filter Res", "Res LFO Source", "Res LFO Scale", "Res Env Source", "Res Env Scale", "Reson" });
+    resonSlider = std::make_unique<OscSlider>(resParams, audioProcessor, true);
+    resonSlider->setSliderColor(Colours::aquamarine);
+    addAndMakeVisible(resonSlider.get());
 
-    setSize(800, 600);
+    auto driveParams = StringArray({ "Filter Drive", "Drive LFO Source", "Drive LFO Scale", "Drive Env Source", "Drive Env Scale", "Drive" });
+    driveSlider = std::make_unique<OscSlider>(driveParams, audioProcessor, true);
+    driveSlider->setSliderColor(Colours::aquamarine);
+    addAndMakeVisible(driveSlider.get());
 
+    noteOn = std::make_unique<TextButton>("Note On");
+    addAndMakeVisible(noteOn.get());
+    noteOn->addListener(this);
+
+    noteOff = std::make_unique<TextButton>("Note Off");
+    addAndMakeVisible(noteOff.get());
+    noteOff->addListener(this);
+    //midiTestButton->setClickingTogglesState(true);
+
+
+//    setSize(800, 500);
+    setSize(1000, 650);
 
     startTimerHz(60);
 }
@@ -93,180 +108,78 @@ GayPolyCommunistAudioProcessorEditor::~GayPolyCommunistAudioProcessorEditor()
 {
 }
 
-void GayPolyCommunistAudioProcessorEditor::initSliders()
-{
-    waveSlider = std::make_unique<Slider>();
-    waveSlider->setSliderStyle(juce::Slider::SliderStyle::LinearBarVertical);
-    waveSlider->setTextBoxStyle(juce::Slider::TextBoxBelow, true, 40, 20);
-    addAndMakeVisible(waveSlider.get());
-
-    waveAttach = std::make_unique<AudioProcessorValueTreeState::SliderAttachment>
-        (audioProcessor.getValueTree(), "Wavetable", *waveSlider.get());
-}
-
-void GayPolyCommunistAudioProcessorEditor::initButtons()
-{
-    //======================
-    modButtonLFO1 = std::make_unique <TextButton>("LFO 1");
-    modButtonLFO1->addListener(this);
-    modButtonLFO1->setClickingTogglesState(true);
-    modButtonLFO1->setRadioGroupId(1);
-    modButtonLFO1->setColour(TextButton::buttonColourId, color1);
-    addAndMakeVisible(modButtonLFO1.get());
-
-    modButtonLFO2 = std::make_unique <TextButton>("LFO 2");
-    modButtonLFO2->addListener(this);
-    modButtonLFO2->setClickingTogglesState(true);
-    modButtonLFO2->setRadioGroupId(1);
-    modButtonLFO2->setColour(TextButton::buttonColourId, color2);
-    addAndMakeVisible(modButtonLFO2.get());
-    
-    //======================
-    modButtonEnv1 = std::make_unique <TextButton>("Amp Env");
-    modButtonEnv1->addListener(this);
-    modButtonEnv1->setClickingTogglesState(true);
-    modButtonEnv1->setRadioGroupId(2);
-    modButtonEnv1->setColour(TextButton::buttonColourId, color1);
-    addAndMakeVisible(modButtonEnv1.get());
-
-    modButtonEnv2 = std::make_unique <TextButton>("Env 1");
-    modButtonEnv2->addListener(this);
-    modButtonEnv2->setClickingTogglesState(true);
-    modButtonEnv2->setRadioGroupId(2);
-    modButtonEnv2->setColour(TextButton::buttonColourId, color2);
-    addAndMakeVisible(modButtonEnv2.get());
-
-    //======================
-    buttonADSR1 = std::make_unique <TextButton>("ADSR 1");
-    buttonADSR1->addListener(this);
-    buttonADSR1->setClickingTogglesState(true);
-    buttonADSR1->setRadioGroupId(3);
-    buttonADSR1->setColour(TextButton::buttonColourId, color1);
-    addAndMakeVisible(buttonADSR1.get());
-
-    buttonADSR2 = std::make_unique <TextButton>("ADSR 2");
-    buttonADSR2->addListener(this);
-    buttonADSR2->setClickingTogglesState(true);
-    buttonADSR2->setRadioGroupId(3);
-    buttonADSR2->setColour(TextButton::buttonColourId, color2);
-    addAndMakeVisible(buttonADSR2.get());
-
-    //======================
-    buttonLFO1 = std::make_unique <TextButton>("LFO 1");
-    buttonLFO1->addListener(this);
-    buttonLFO1->setClickingTogglesState(true);
-    buttonLFO1->setRadioGroupId(4);
-    buttonLFO1->setColour(TextButton::buttonColourId, color1);
-    addAndMakeVisible(buttonLFO1.get());
-
-    buttonLFO2 = std::make_unique <TextButton>("LFO 2");
-    buttonLFO2->addListener(this);
-    buttonLFO2->setClickingTogglesState(true);
-    buttonLFO2->setRadioGroupId(4);
-    buttonLFO2->setColour(TextButton::buttonColourId, color2);
-    addAndMakeVisible(buttonLFO2.get());
-
-}
 
 //==============================================================================
 void GayPolyCommunistAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    g.fillAll(juce::Colour({ 106, 135, 127 }).brighter());
+    g.fillAll(juce::Colour({ 20, 5, 7 }));
+
+    auto frame = getLocalBounds().reduced(getWidth() * 0.025f, getHeight() * 0.06f);
+    frame.setPosition(getWidth() * 0.025, getHeight() * 0.09f);
+    g.setColour(Colours::antiquewhite);
+    g.drawRoundedRectangle(frame.toFloat(), 2.f, 2.f);
+
+    auto largeFrame = getLocalBounds();
+    g.drawRoundedRectangle(largeFrame.toFloat(), 2.f, 2.f);
+
+    auto midPath = Path();
+    midPath.startNewSubPath(getWidth() * 0.05f, lineHeight);
+    midPath.lineTo(getWidth() * 0.95f, lineHeight);
+    midPath.closeSubPath();
+
+    auto stroke = PathStrokeType(2.f);
+    g.strokePath(midPath, stroke);
+
 }
 
 void GayPolyCommunistAudioProcessorEditor::resized()
 {
-    adsrSliders1->setBoundsRelative(0.1f, 0.75f, 0.8f, 0.2f);
-    adsrSliders2->setBoundsRelative(0.1f, 0.75f, 0.8f, 0.2f);
+    lineHeight = getHeight() * 0.6f;
+    nameLabel->setBoundsRelative(0.05f, 0.f, 0.4f, 0.1f);
 
-    lfoSliders1->setBoundsRelative(0.1f, 0.55f, 0.4f, 0.2f);
-    lfoSliders2->setBoundsRelative(0.1f, 0.55f, 0.4f, 0.2f);
+    oscillator1->setBoundsRelative(0.05f, 0.115, 0.385f, 0.46f);
+    oscillator2->setBoundsRelative(0.46f, 0.115, 0.385f, 0.46f);
 
-    filtSliders->setBoundsRelative(0.5f, 0.55f, 0.4f, 0.2f);
+    noteOn->setBoundsRelative(0.6f, 0.05f, 0.1f, 0.03f);
+    noteOff->setBoundsRelative(0.7f, 0.05f, 0.1f, 0.03f);
 
-    waveSlider->setBoundsRelative(0.55f, 0.01f, 0.04f, 0.33f);
-    wavetableVisualizer->setBoundsRelative(0.6f, 0.f, 0.4f, 0.35f);
+    float lfoY = 0.625f, envY = 0.75f, lfoH = 0.1f, envH = 0.2f, lfoW = 0.29f, envW = 0.29f;
 
-    //==============================
-    modSliders1->setBoundsRelative(0.1f, 0.1f, 0.4f, 0.1f);
-    modSliders2->setBoundsRelative(0.1f, 0.1f, 0.4f, 0.1f);
+    lfoSlider1->setBoundsRelative(0.05f, lfoY, lfoW, lfoH);
+    lfoSlider2->setBoundsRelative(0.355f, lfoY, lfoW, lfoH);
+    lfoSlider3->setBoundsRelative(0.66f, lfoY, lfoW, lfoH);
 
-    envSliders1->setBoundsRelative(0.1f, 0.2f, 0.4f, 0.1f); // env in the mod matrix
-    envSliders2->setBoundsRelative(0.1f, 0.2f, 0.4f, 0.1f);
+    envSlider1->setBoundsRelative(0.05f, envY, envW, envH);
+    envSlider2->setBoundsRelative(0.355f, envY, envW, envH);
+    envSlider3->setBoundsRelative(0.66f, envY, envW, envH);
 
-    //==============================
-    modButtonLFO1->setBoundsRelative(0.01f, 0.12f, 0.07f, 0.03f);
-    modButtonLFO2->setBoundsRelative(0.01f, 0.16f, 0.07f, 0.03f);
-
-    modButtonEnv1->setBoundsRelative(0.01f, 0.2f, 0.07f, 0.03f);
-    modButtonEnv2->setBoundsRelative(0.01f, 0.25f, 0.07f, 0.03f);
-
-    buttonLFO1->setBoundsRelative(0.01f, 0.575f, 0.07f, 0.03f);
-    buttonLFO2->setBoundsRelative(0.01f, 0.625f, 0.07f, 0.03f);
-
-    buttonADSR1->setBoundsRelative(0.01f, 0.775f, 0.07f, 0.03f);
-    buttonADSR2->setBoundsRelative(0.01f, 0.825f, 0.07f, 0.03f);
-
-    modLabel->setBoundsRelative(0.1f, 0.05f, 0.4f, 0.05f);
-
-    envVisual->setBoundsRelative(0.1f, 0.35f, 0.4f, 0.33f);
+    filtSlider->setBoundsRelative(0.86f, 0.115f, 0.1f, 0.14f);
+    resonSlider->setBoundsRelative(0.86f, 0.265f, 0.1f, 0.14f);
+    driveSlider->setBoundsRelative(0.86f, 0.415f, 0.1f, 0.14f);
 
 }
 
 void GayPolyCommunistAudioProcessorEditor::timerCallback()
 {
-    wavetableVisualizer->setAmp(audioProcessor.getRMS());
     repaint();
 }
 
 void GayPolyCommunistAudioProcessorEditor::buttonClicked(Button* b)
 {
-    //// which lfo is being represented in mod matrix
-    //if (b == modButtonLFO1.get())
-    //{
-    //    modSliders1->setVisible(true);
-    //    modSliders2->setVisible(false);
-    //}
-
-    //if (b == modButtonLFO2.get())
-    //{
-    //    modSliders1->setVisible(false);
-    //    modSliders2->setVisible(true);
-    //}
-
-    ////==============================
-    //if (b == modButtonEnv1.get())
-    //{
-    //    envSliders1->setVisible(true);
-    //    envSliders2->setVisible(false);
-    //}
-    //if (b == modButtonEnv2.get())
-    //{
-    //    envSliders1->setVisible(false);
-    //    envSliders2->setVisible(true);
-    //}
-
-    ////==============================
-    //if (b == buttonADSR1.get())
-    //{
-    //    adsrSliders1->setVisible(true);
-    //    adsrSliders2->setVisible(false);
-    //}
-    //if (b == buttonADSR2.get())
-    //{
-    //    adsrSliders1->setVisible(false);
-    //    adsrSliders2->setVisible(true);
-    //}
-
-    ////==============================
-    //if (b == buttonLFO1.get())
-    //{
-    //    lfoSliders1->setVisible(true);
-    //    lfoSliders2->setVisible(false);
-    //}
-    //if (b == buttonLFO2.get())
-    //{
-    //    lfoSliders1->setVisible(false);
-    //    lfoSliders2->setVisible(true);
-    //}
+    if (b == noteOn.get())
+    {
+        audioProcessor.triggerMidi(true);
+    }
+    if (b == noteOff.get())
+    {
+        audioProcessor.triggerMidi(false);
+    }
 }
+
+void GayPolyCommunistAudioProcessorEditor::buttonStateChanged(Button* b)
+{
+
+}
+
+
+

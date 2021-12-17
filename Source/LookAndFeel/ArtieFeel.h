@@ -38,12 +38,14 @@ public:
 
     juce::Font getPopupMenuFont() override;
     juce::Font getLabelFont(juce::Label&) override;
+    void drawLabel(Graphics& g, Label& l) override;
+
     Font getTextButtonFont(TextButton&, int buttonHeight) override { return getFont(); }
 
 private:
     juce::Font getFont()
     {
-        return juce::Font ("Consolas", "Regular", 10.f);
+        return Font ("Consolas", "Regular", 10.f);
     }
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ArtieFeel)

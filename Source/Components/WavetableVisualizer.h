@@ -21,7 +21,7 @@ class WavetableVisualizer : public juce::Component,
     public FileDragAndDropTarget //, juce::Timer
 {
 public:
-    WavetableVisualizer(GayPolyCommunistAudioProcessor&);
+    WavetableVisualizer(int osc, GayPolyCommunistAudioProcessor&, WaveTableVector&);
     ~WavetableVisualizer() override;
 
     void paint (juce::Graphics& g) override;
@@ -44,6 +44,7 @@ public:
     
     
 private:
+    int oscNum = 1;
     WaveTableVector& waveVector;
     GayPolyCommunistAudioProcessor& processor;
     

@@ -34,7 +34,7 @@ public:
 
     void createSineTable()
     {
-        waveBuffer.setSize(1, (int)tableSize + 1);
+        waveBuffer.setSize(1, (int)tableSize);
         waveBuffer.clear();
 
         auto* buffWrite = waveBuffer.getWritePointer(0);
@@ -66,7 +66,9 @@ public:
         auto value0 = table[index0];
         auto value1 = table[index0 + 1];
 
-        auto waveSample = value0 + (frac * (value1 - value0));
+        currentSample = value0 + (frac * (value1 - value0));
+
+        currentSample *= gain;
 
         currentIndex += tableDelta;
 
@@ -75,7 +77,13 @@ public:
             currentIndex = 0;
         }
 
-        return waveSample;
+        return currentSample;
+    }
+
+    // way of getting sample without increment
+    float getCurrentSample()
+    {
+        return currentSample;
     }
 
     void setFrequency(float freq)
@@ -95,10 +103,14 @@ public:
         waveBuffer = newTable;
     }
 
+    void setGain(float gainVal)
+    {
+        gain = gainVal;
+    }
 private:
     juce::AudioBuffer<float> waveBuffer;
-    int tableSize = -1;
-    double mSampleRate = -1;
-    float tableDelta = -1, currentIndex = 0;
-
+    int tableSize = 2048;
+    double mSampleRate = 48000;
+    float tableDelta = 0.f, currentIndex = 0.f, currentSample = 0.f;
+    float gain = 1.f;
 };

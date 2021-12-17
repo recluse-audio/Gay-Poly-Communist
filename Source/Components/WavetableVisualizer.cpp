@@ -12,8 +12,8 @@
 
 
 //==============================================================================
-WavetableVisualizer::WavetableVisualizer(GayPolyCommunistAudioProcessor& p) 
-    : processor(p), waveVector(p.getWaveVector())
+WavetableVisualizer::WavetableVisualizer(int osc, GayPolyCommunistAudioProcessor& p, WaveTableVector& w) 
+    : oscNum(osc), processor(p), waveVector(w)
 {
     setSize(400, 150);
     setNewWaveColour(juce::Colours::white);
@@ -43,16 +43,39 @@ void WavetableVisualizer::paint (juce::Graphics& g)
 
         wavePath.startNewSubPath(0, frameHalf);
 
-        auto buffRead0 = waveVector.getLowerWave()->getBuffer().getReadPointer(0);
-        auto buffRead1 = waveVector.getUpperWave()->getBuffer().getReadPointer(0);
+        RangedAudioParameter* waveParam;
+        if (oscNum == 1)
+        {
+            waveParam = processor.getValueTree().getParameter("Wave 1 Position");
+        }
+        else
+        {
+            waveParam = processor.getValueTree().getParameter("Wave 2 Position");
+
+        }
+        auto waveVal = waveParam->getValue();
+        // i chose to calc this here as opposed to just doing it in the vector because I couldn't smooth the waveIndices (not sure if this is smart)_
+        // They are potentially changing at the sample level so I thought it best to pass the smoothed wavePos value only
+        int lowerWaveIndex = (int)waveVal;
+        int upperWaveIndex = lowerWaveIndex + 1;
+
+        if (upperWaveIndex > waveVector.getArraySize())
+        {
+            upperWaveIndex = 0;
+        }
+        
+        float interp = waveVal - (float)lowerWaveIndex;
+
+        auto buffRead0 = waveVector.getLowerWave(lowerWaveIndex)->getBuffer().getReadPointer(0);
+        auto buffRead1 = waveVector.getUpperWave(upperWaveIndex)->getBuffer().getReadPointer(0);
 
         float waveIncrement = (float)w / waveVector.getTableSize();
 
         for (int i = 0; i <= waveVector.getTableSize(); ++i)
         {
             auto x = i * waveIncrement;
-            auto value0 = buffRead0[i] * (1.f - waveVector.getWaveInterp());
-            auto value1 = buffRead1[i] * (waveVector.getWaveInterp());
+            auto value0 = buffRead0[i] * (1.f - interp);
+            auto value1 = buffRead1[i] * interp;
             auto interpWave = value0 + value1;
             auto y = frameHalf - (interpWave * frameHalf * 0.9f); // 0.9 meant to keep the wave from ever touching edge of frame
             wavePath.lineTo(x, y);
@@ -89,16 +112,7 @@ void WavetableVisualizer::filesDropped(const StringArray& files, int x, int y)
 {
     processor.shouldProcess(false);
 
-    for (auto file : files)
-    {
-        for (int voiceNum = 0; voiceNum < processor.getSynth().getNumVoices(); voiceNum++)
-        {
-            if (auto voice = dynamic_cast<GayVoice*>(processor.getSynth().getVoice(voiceNum)))
-            {
-                voice->loadTables(file);
-            }
-        }
-    }
+    processor.loadWaveTables(files, oscNum);
 
     processor.shouldProcess(true);
 }

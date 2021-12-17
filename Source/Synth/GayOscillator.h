@@ -11,87 +11,62 @@
 #pragma once
 #include <JuceHeader.h>
 #include "../WaveTable/WaveTableVector.h"
+#include "GayADSR.h"
+#include "GayParam.h"
 
 
 //==============================================================================
-template <typename Type>
 class GayOscillator
 {
 public:
+
     //==============================================================================
     // each oscillator
-    GayOscillator(){}
+    GayOscillator()
+    {
+        gain = std::make_unique<GayParam>(GayParam::ParamType::gain);
+        pitch = std::make_unique<GayParam>(GayParam::ParamType::pitch);
+        wave = std::make_unique<GayParam>(GayParam::ParamType::wave);
+
+    }
 
     ~GayOscillator(){}
 
-    void prepare(const dsp::ProcessSpec& spec)
+    void prepare(double sampleRate)
     {
-        tempBlock = juce::dsp::AudioBlock<float>(heapBlock, spec.numChannels, spec.maximumBlockSize);
-        sampleRate = spec.sampleRate;
         waveVector.prepare(sampleRate);
+        waveVector.setWave(0.5f);
+
+        gain->prepare(sampleRate);
+        pitch->prepare(sampleRate);
+        wave->prepare(sampleRate);
+
     }
 
-    /*
-        Normalized value that represents interpolation of wavetable vector
-    */
-    void setWaveform(float waveform)
+    void noteOn(float vel, float freq)
     {
-        waveVector.setWave(waveform);
+        pitch->setValue(freq);
     }
 
+    void noteOff(){}
+ 
     //==============================================================================
-    void setFrequency(Type newValue, bool force = false)
+    void setFrequency(float newValue, bool force = false)
     {
-        waveVector.setFrequency(newValue);
-        // processorChain.template get<oscIndex>().setFrequency (newValue, force);
+        pitch->setValue(newValue);
+        //waveVector.setFrequency(newValue);
     }
 
-    void setLevel(Type newValue)
-    {
-        // processorChain.template get<gainIndex>().setGainLinear (newValue);
-    }
+    void setLevel(float newValue){}
 
-    void reset() noexcept
-    {
-        processorChain.reset();
-    }
+    void reset() noexcept{}
 
-    //==============================================================================
-    /*
-    *   This part is for use in a processor chain, here we are just writing directly, but could utilize a processor chain
-    *   for each osc
-    */
-    template <typename ProcessContext>
-    void process(const ProcessContext& context) noexcept
-    {
-        auto&& outBlock = context.getOutputBlock();
-        auto blockToUse = tempBlock.getSubBlock(0, outBlock.getNumSamples());
-
-        for (size_t i = 0; i < outBlock.getNumSamples(); i++)
-        {
-            // write to sample here because wavetable is mono
-            auto sample = waveVector.getNextSample();
-
-            for (size_t j = 0; j < outBlock.getNumChannels(); j++)
-            {
-                auto* dst = outBlock.getChannelPointer(j);
-                dst[i] += sample;
-            }
-        }
-    }
-
+    // iterates and returns
     float getNextSample()
     {
-        return waveVector.getNextSample();
-    }
-
-    /*
-        Used to down sample lfo's and such, I could just use the wavetable but I want to 
-        bve consistent and use this for all oscillators including the lfo0's
-    */
-    float getSampleFromIncrement(int increment)
-    {
-        return waveVector.incrementReadIndex(increment);
+        waveVector.setWave(wave->getNextValue());
+        waveVector.setFrequency(pitch->getNextValue());
+        return waveVector.getNextSample() * gain->getNextValue();
     }
 
     //==============================================================================
@@ -105,15 +80,71 @@ public:
     {
         waveVector.loadTables(filePath);
     }
+
+    void update(float g, float gLFOScale, float gEnvScale, float w, float wLFOScale, float wEnvScale, float p, float pLFOScale, float pEnvScale)
+    {
+        gain->setValue(g);
+        gain->setLFOScale(gLFOScale);
+        gain->setEnvScale(gEnvScale);
+
+        pitch->setOffset(p);
+        pitch->setLFOScale(pLFOScale);
+        pitch->setEnvScale(pEnvScale);
+
+        wave->setValue(w);
+        wave->setLFOScale(wLFOScale);
+        wave->setEnvScale(wEnvScale);
+
+    }
+
+    void assignLFO(WaveTable* mLFO, GayParam::ParamType pType)
+    {
+        using GayType = GayParam::ParamType;
+        if (pType == GayType::gain)
+            gain->assignLFO(mLFO);
+        if (pType == GayType::wave)
+            wave->assignLFO(mLFO);
+        if (pType == GayParam::pitch)
+            pitch->assignLFO(mLFO);
+    }
+    
+    void setNoLFO(GayParam::ParamType pType)
+    {
+        using GayType = GayParam::ParamType;
+        if (pType == GayType::gain)
+            gain->setNoLFO();
+        if (pType == GayType::wave)
+            wave->setNoLFO();
+        if (pType == GayParam::pitch)
+            pitch->setNoLFO();
+    }
+
+    void assignEnvelope(GayADSR* mEnv, GayParam::ParamType pType)
+    {
+        using GayType = GayParam::ParamType;
+        if (pType == GayType::gain)
+            gain->assignEnvelope(mEnv);
+        if (pType == GayType::wave)
+            wave->assignEnvelope(mEnv);
+        if (pType == GayParam::pitch)
+            pitch->assignEnvelope(mEnv);
+        //gain->assignEnvelope(mEnv);
+    }
+    
+    void setNoEnv(GayParam::ParamType pType)
+    {
+        using GayType = GayParam::ParamType;
+        if (pType == GayType::gain)
+            gain->setNoEnv();
+        if (pType == GayType::wave)
+            wave->setNoEnv();
+        if (pType == GayParam::pitch)
+            pitch->setNoEnv();
+    }
 private:
-    //==============================================================================
-    juce::HeapBlock<char> heapBlock;
-    juce::dsp::AudioBlock<float> tempBlock;
-
-    //WaveTable waveTable;
     WaveTableVector waveVector;
-    double sampleRate = -1;
-
+    double glideTime = 0.1;
+    std::unique_ptr<GayParam> gain, wave, pitch;
 
 };
 

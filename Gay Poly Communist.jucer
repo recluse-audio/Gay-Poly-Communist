@@ -7,7 +7,13 @@
   <MAINGROUP id="IbflzF" name="Gay Poly Communist">
     <GROUP id="{CFF36181-D2F0-986C-BA47-E1BB90F956DE}" name="Source">
       <GROUP id="{16009940-43FB-6390-6EF6-FE52B8E9CDA3}" name="Components">
-        <FILE id="E8ts8J" name="ParamSliders.h" compile="0" resource="0" file="Source/Components/ParamSliders.h"/>
+        <FILE id="iyl9Wo" name="WaveMenu.h" compile="0" resource="0" file="Source/Components/WaveMenu.h"/>
+        <FILE id="ufHVah" name="OscillatorComponent.h" compile="0" resource="0"
+              file="Source/Components/OscillatorComponent.h"/>
+        <FILE id="FtcoWL" name="LFOSlider.h" compile="0" resource="0" file="Source/Components/LFOSlider.h"/>
+        <FILE id="BMhhwS" name="OscSlider.h" compile="0" resource="0" file="Source/Components/OscSlider.h"/>
+        <FILE id="HTX0mI" name="GPCSlider.h" compile="0" resource="0" file="Source/Components/GPCSlider.h"/>
+        <FILE id="E8ts8J" name="EnvSliders.h" compile="0" resource="0" file="Source/Components/EnvSliders.h"/>
         <FILE id="ZOQZRp" name="WavetableVisualizer.cpp" compile="1" resource="0"
               file="Source/Components/WavetableVisualizer.cpp"/>
         <FILE id="bWHhOF" name="WavetableVisualizer.h" compile="0" resource="0"
@@ -25,8 +31,11 @@
       <GROUP id="{18CDEF89-1D66-4237-D3C5-534B8B3C56D2}" name="LookNFeel">
         <FILE id="ecUmQQ" name="ArtieFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel/ArtieFeel.cpp"/>
         <FILE id="lh2FoL" name="ArtieFeel.h" compile="0" resource="0" file="Source/LookAndFeel/ArtieFeel.h"/>
+        <FILE id="TFRNte" name="NameFeel.h" compile="0" resource="0" file="Source/LookAndFeel/NameFeel.h"/>
       </GROUP>
       <GROUP id="{34557F00-31F2-D788-E1EA-ECD8A1A73BA6}" name="Synth">
+        <FILE id="ggAaeZ" name="GayParam.h" compile="0" resource="0" file="Source/Synth/GayParam.h"/>
+        <FILE id="MxJbjC" name="GayADSR.h" compile="0" resource="0" file="Source/Synth/GayADSR.h"/>
         <FILE id="rWyedU" name="GaySynth.h" compile="0" resource="0" file="Source/Synth/GaySynth.h"/>
         <FILE id="rKMTPT" name="GayVoice.h" compile="0" resource="0" file="Source/Synth/GayVoice.h"/>
         <FILE id="LsbKj3" name="GayOscillator.h" compile="0" resource="0" file="Source/Synth/GayOscillator.h"/>
@@ -43,6 +52,7 @@
               file="Source/Processor/PluginProcessor.cpp"/>
         <FILE id="KrUeXk" name="PluginProcessor.h" compile="0" resource="0"
               file="Source/Processor/PluginProcessor.h"/>
+        <FILE id="M61t6G" name="WaveDatabase.h" compile="0" resource="0" file="Source/Processor/WaveDatabase.h"/>
       </GROUP>
       <GROUP id="{E93B1B7E-4121-0E68-A696-EAFA1C9C2FBD}" name="Editor">
         <FILE id="DdDhSa" name="PluginEditor.cpp" compile="1" resource="0"
