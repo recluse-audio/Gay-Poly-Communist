@@ -28,8 +28,8 @@ public:
             tableArray.add(new WaveTable(tableSize));
         }
         //auto filePath = String("D:/WaveTables/Echo Sound Works Core Tables/FM/");
-        loadTables("D:/WaveTables/Echo Sound Works Core Tables/Artie/");
-
+        //loadTables("C:/ProgramData/Recluse-Audio/Wavetables/Echo Sound Works Modular/");
+        loadTables("C:/ProgramData/Recluse-Audio/GPC/Wavetables/Vector 1");
     }
 
     ~WaveTableVector() 
@@ -41,6 +41,7 @@ public:
     {
         mSampleRate = sampleRate;
         prepTables();
+        waveVal.reset(sampleRate, 0.01);
     }
 
     void prepTables()
@@ -69,9 +70,9 @@ public:
         {
             auto waveFolders = waveFile.findChildFiles(2, true, "*.wav");
 
-            arraySize = waveFolders.size();
+            arraySize = waveFolders.size() - 1;
 
-            for (int i = 0; i < waveFolders.size(); i++)
+            for (int i = 0; i < arraySize; i++)
             {
                 auto waveIter = File(waveFolders[i].getFullPathName());
                 std::unique_ptr<AudioFormatReader> formatReader{ formatManager.createReaderFor(waveIter) };
@@ -81,9 +82,8 @@ public:
         }
         else
         {
-            
             if (waveFile.hasFileExtension(".wav"))
-            {
+            {    
                 arraySize++; // accounting for added table
                 std::unique_ptr<AudioFormatReader> formatReader{ formatManager.createReaderFor(waveFile) };
                 formatReader->read(&tableArray[arraySize-1]->getBuffer(), 0, tableSize, 0, true, false);
@@ -94,6 +94,11 @@ public:
         prepTables();
     }
 
+    void loadTableFromBuffer(AudioBuffer<float>& waveBuffer)
+    {
+        arraySize++;
+        tableArray[arraySize - 1]->passBuffer(waveBuffer);
+    }
 
     void setFrequency(float freq)
     {
@@ -106,9 +111,21 @@ public:
     
     float getNextSample()
     {
-        auto sample1 = tableArray[lowerWaveIndex]->getNextSample() * (1.f - interpVal);
+        float wavePos = waveVal.getNextValue();
 
-        auto sample2 = tableArray[upperWaveIndex]->getNextSample() * (interpVal);
+        int lowerWaveIndex = (int)wavePos;
+        int upperWaveIndex = lowerWaveIndex + 1;
+
+        if (lowerWaveIndex + 1 > arraySize - 1)
+        {
+            upperWaveIndex = 0;
+        }
+
+        float interp = wavePos - (float)lowerWaveIndex;
+
+        auto sample1 = tableArray[lowerWaveIndex]->getNextSample() * (1.f - interp);
+
+        auto sample2 = tableArray[upperWaveIndex]->getNextSample() * (interp);
 
         auto sample = sample1 + sample2;
 
@@ -128,20 +145,7 @@ public:
     void setWave(float waveForm)
     {
         auto mappedWaveIndex = jmap(waveForm, 0.f, (float)arraySize - 1.f);
-
-        lowerWaveIndex = (int)mappedWaveIndex;
-
-        if (lowerWaveIndex + 1 > arraySize - 1)
-        {
-            upperWaveIndex = 0;
-        }
-        else
-        {
-            upperWaveIndex = lowerWaveIndex + 1;
-        }
-       // DBG(lowerWaveIndex.get());
-
-        interpVal = mappedWaveIndex - (int)mappedWaveIndex; // float overhang
+        waveVal.setTargetValue(mappedWaveIndex);
     }
 
     WaveTable* atIndex(int index)
@@ -159,26 +163,32 @@ public:
         return !loading.get();
     }
 
-    WaveTable* getLowerWave()
+    WaveTable* getLowerWave(int lowerWaveIndex)
     {
         return tableArray[lowerWaveIndex];
     }
 
-    WaveTable* getUpperWave()
+    WaveTable* getUpperWave(int upperWaveIndex)
     {
         return tableArray[upperWaveIndex];
     }
 
-    float getWaveInterp()
+    float getWaveVal()
     {
-        return interpVal;
+        return waveVal.getCurrentValue();
     }
 
     int getTableSize()
     {
         return tableSize;
     }
+
+    int getArraySize()
+    {
+        return arraySize;
+    }
 private:
+
     OwnedArray<WaveTable> tableArray;
     AudioFormatManager formatManager;
     CriticalSection lock;
@@ -186,9 +196,7 @@ private:
     int tableSize = 0;
     int arraySize = 0;
 
-    int lowerWaveIndex{ 0 };
-    int upperWaveIndex{ 0 };
-    float interpVal{ 0.f };
+    SmoothedValue<float> waveVal; // float interpVal{ 0.f };
 
 
     Atomic<bool> loading { false };

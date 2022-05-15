@@ -31,10 +31,10 @@ public:
         mSampleRate = sampleRate;
     }
 
-
+    // used for defaults, lfo's... not involved in loading new tables
     void createSineTable()
     {
-        waveBuffer.setSize(1, (int)tableSize + 1);
+        waveBuffer.setSize(1, (int)tableSize);
         waveBuffer.clear();
 
         auto* buffWrite = waveBuffer.getWritePointer(0);
@@ -66,16 +66,24 @@ public:
         auto value0 = table[index0];
         auto value1 = table[index0 + 1];
 
-        auto waveSample = value0 + (frac * (value1 - value0));
+        currentSample = value0 + (frac * (value1 - value0));
+
+        currentSample *= gain;
 
         currentIndex += tableDelta;
 
-        if (currentIndex > (float)tableSize)
+        if (currentIndex > (float)waveBuffer.getNumSamples())
         {
             currentIndex = 0;
         }
 
-        return waveSample;
+        return currentSample;
+    }
+
+    // way of getting sample without increment
+    float getCurrentSample()
+    {
+        return currentSample;
     }
 
     void setFrequency(float freq)
@@ -90,15 +98,49 @@ public:
         return waveBuffer;
     }
 
-    void passBuffer(AudioBuffer<float>& newTable)
+    // specifically for visualizer (exists in case user dropped in a wavetable of a different size)
+    AudioBuffer<float>& getMappedBuffer()
     {
-        waveBuffer = newTable;
+        if (waveBuffer.getNumSamples() != tableSize)
+        {
+
+        }
     }
 
+    // passes new buffer to wavetable, handles conversion to size of 2048
+    void passBuffer(AudioBuffer<float>& newTable) // coming in at length of period
+    {
+
+        auto buffRead = newTable.getArrayOfReadPointers();
+        auto buffWrite = waveBuffer.getArrayOfWritePointers();
+        float sizeRatio = (float)newTable.getNumSamples() / (float)tableSize;
+
+        for (int i = 0; i < tableSize; i++)
+        {
+            auto waveIndex = i; // for our nice 2048 sample sized wavetable
+                
+            // downsampling / interpolation algorithm to make new table into 2048
+            auto readIndex = i * sizeRatio;
+            float frac = readIndex - (int)readIndex; 
+
+            float readSample0 = buffRead[0][(int)readIndex] * (1 - frac);
+            float readSample1 = buffRead[0][(int)readIndex + 1] * frac;
+            float readSample = readSample0 + readSample1;
+              
+            buffWrite[0][i] = readSample;
+
+        }
+
+    }
+
+    void setGain(float gainVal)
+    {
+        gain = gainVal;
+    }
 private:
     juce::AudioBuffer<float> waveBuffer;
-    int tableSize = -1;
-    double mSampleRate = -1;
-    float tableDelta = -1, currentIndex = 0;
-
+    int tableSize = 2048;
+    double mSampleRate = 48000;
+    float tableDelta = 0.f, currentIndex = 0.f, currentSample = 0.f;
+    float gain = 1.f;
 };

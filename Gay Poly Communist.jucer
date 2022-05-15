@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="XbBxHL" name="Gay Poly Communist" projectType="audioplug"
@@ -116,3 +117,132 @@
     <WINDOWS/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="XbBxHL" name="Gay Poly Communist" projectType="audioplug"
+              useAppConfig="0" addUsingNamespaceToJuceHeader="1" displaySplashScreen="1"
+              jucerFormatVersion="1" companyName="recluse-audio" pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn"
+              pluginCode="GPC" pluginManufacturerCode="Recl" pluginAUMainType="'aumu'">
+  <MAINGROUP id="IbflzF" name="Gay Poly Communist">
+    <GROUP id="{CFF36181-D2F0-986C-BA47-E1BB90F956DE}" name="Source">
+      <GROUP id="{16009940-43FB-6390-6EF6-FE52B8E9CDA3}" name="Components">
+        <GROUP id="{8919CB94-A40C-0B30-B78D-B343731BF3D4}" name="MainMenu">
+          <FILE id="BzDjmj" name="LOGO_SVG.svg" compile="0" resource="1" file="../../ProgramData/Recluse-Audio/LOGO_SVG.svg"/>
+          <FILE id="ckZjs6" name="MainMenuButton.h" compile="0" resource="0"
+                file="Source/Components/MainMenu/MainMenuButton.h"/>
+          <FILE id="xBU0Q8" name="MainMenuComponent.h" compile="0" resource="0"
+                file="Source/Components/MainMenu/MainMenuComponent.h"/>
+          <GROUP id="{F56AFCB1-087E-DCB3-D563-15F923FBC36D}" name="MainMenuSelections">
+            <FILE id="I3DA6w" name="ParameterDictionaryComponent.h" compile="0"
+                  resource="0" file="Source/Components/MainMenu/MainMenuSelections/ParameterDictionaryComponent.h"/>
+            <FILE id="IZmTiF" name="PresetMenuComponent.h" compile="0" resource="0"
+                  file="Source/Components/MainMenu/MainMenuSelections/PresetMenuComponent.h"/>
+            <FILE id="OzlbRp" name="TutorialComponent.h" compile="0" resource="0"
+                  file="Source/Components/MainMenu/MainMenuSelections/TutorialComponent.h"/>
+          </GROUP>
+        </GROUP>
+        <FILE id="hZdv4U" name="FilterComponent.h" compile="0" resource="0"
+              file="Source/Components/FilterComponent.h"/>
+        <FILE id="iyl9Wo" name="WaveMenu.h" compile="0" resource="0" file="Source/Components/WaveMenu.h"/>
+        <FILE id="ufHVah" name="OscillatorComponent.h" compile="0" resource="0"
+              file="Source/Components/OscillatorComponent.h"/>
+        <FILE id="FtcoWL" name="LFOSlider.h" compile="0" resource="0" file="Source/Components/LFOSlider.h"/>
+        <FILE id="BMhhwS" name="OscSlider.h" compile="0" resource="0" file="Source/Components/OscSlider.h"/>
+        <FILE id="HTX0mI" name="GPCSlider.h" compile="0" resource="0" file="Source/Components/GPCSlider.h"/>
+        <FILE id="E8ts8J" name="EnvSliders.h" compile="0" resource="0" file="Source/Components/EnvSliders.h"/>
+        <FILE id="ZOQZRp" name="WavetableVisualizer.cpp" compile="1" resource="0"
+              file="Source/Components/WavetableVisualizer.cpp"/>
+        <FILE id="bWHhOF" name="WavetableVisualizer.h" compile="0" resource="0"
+              file="Source/Components/WavetableVisualizer.h"/>
+        <FILE id="CxZWi9" name="ModSliders.h" compile="0" resource="0" file="Source/Components/ModSliders.h"/>
+        <GROUP id="{4A67719B-FB2A-ABE4-3370-71829E76523F}" name="EnvelopeComponent">
+          <FILE id="RAg5VZ" name="EnvelopeVisualizer.cpp" compile="1" resource="0"
+                file="Source/Components/EnvelopeComponent/EnvelopeVisualizer.cpp"/>
+          <FILE id="tx3w9n" name="EnvelopeVisualizer.h" compile="0" resource="0"
+                file="Source/Components/EnvelopeComponent/EnvelopeVisualizer.h"/>
+          <FILE id="kOvs9q" name="EnvelopeControlPoint.h" compile="0" resource="0"
+                file="Source/Components/EnvelopeComponent/EnvelopeControlPoint.h"/>
+        </GROUP>
+      </GROUP>
+      <GROUP id="{18CDEF89-1D66-4237-D3C5-534B8B3C56D2}" name="LookNFeel">
+        <FILE id="ecUmQQ" name="ArtieFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel/ArtieFeel.cpp"/>
+        <FILE id="lh2FoL" name="ArtieFeel.h" compile="0" resource="0" file="Source/LookAndFeel/ArtieFeel.h"/>
+        <FILE id="TFRNte" name="NameFeel.h" compile="0" resource="0" file="Source/LookAndFeel/NameFeel.h"/>
+      </GROUP>
+      <GROUP id="{34557F00-31F2-D788-E1EA-ECD8A1A73BA6}" name="Synth">
+        <FILE id="ggAaeZ" name="GayParam.h" compile="0" resource="0" file="Source/Synth/GayParam.h"/>
+        <FILE id="MxJbjC" name="GayADSR.h" compile="0" resource="0" file="Source/Synth/GayADSR.h"/>
+        <FILE id="rWyedU" name="GaySynth.h" compile="0" resource="0" file="Source/Synth/GaySynth.h"/>
+        <FILE id="rKMTPT" name="GayVoice.h" compile="0" resource="0" file="Source/Synth/GayVoice.h"/>
+        <FILE id="LsbKj3" name="GayOscillator.h" compile="0" resource="0" file="Source/Synth/GayOscillator.h"/>
+      </GROUP>
+      <GROUP id="{A51FEACE-1059-FAF5-25C8-E299B238C78B}" name="Wavetable">
+        <FILE id="Qq1nZY" name="WavetableParser.h" compile="0" resource="0"
+              file="Source/WaveTable/WavetableParser.h"/>
+        <FILE id="tdgYwx" name="Yin.h" compile="0" resource="0" file="Source/WaveTable/Yin.h"/>
+        <FILE id="v9Pt73" name="WaveTableLoader.h" compile="0" resource="0"
+              file="Source/WaveTable/WaveTableLoader.h"/>
+        <FILE id="rGoCKo" name="WaveTableVector.h" compile="0" resource="0"
+              file="Source/WaveTable/WaveTableVector.h"/>
+        <FILE id="FGf9Io" name="WaveTable.h" compile="0" resource="0" file="Source/WaveTable/WaveTable.h"/>
+      </GROUP>
+      <GROUP id="{FDF19D77-032E-F4C2-37F2-E9B06447B059}" name="Processor">
+        <FILE id="VJDWt3" name="PluginProcessor.cpp" compile="1" resource="0"
+              file="Source/Processor/PluginProcessor.cpp"/>
+        <FILE id="KrUeXk" name="PluginProcessor.h" compile="0" resource="0"
+              file="Source/Processor/PluginProcessor.h"/>
+        <FILE id="M61t6G" name="WaveDatabase.h" compile="0" resource="0" file="Source/Processor/WaveDatabase.h"/>
+      </GROUP>
+      <GROUP id="{E93B1B7E-4121-0E68-A696-EAFA1C9C2FBD}" name="Editor">
+        <FILE id="DdDhSa" name="PluginEditor.cpp" compile="1" resource="0"
+              file="Source/Editor/PluginEditor.cpp"/>
+        <FILE id="gHZSDd" name="PluginEditor.h" compile="0" resource="0" file="Source/Editor/PluginEditor.h"/>
+      </GROUP>
+    </GROUP>
+  </MAINGROUP>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <VS2019 targetFolder="Builds/VisualStudio2019">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Gay Poly Communist"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="Gay Poly Communist"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_dsp" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../JUCE_Home/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../JUCE_Home/JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2019>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_dsp" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
+</JUCERPROJECT>
+>>>>>>> ed4bc7c8d6e98ab459f40b30c1c89b3989142bee

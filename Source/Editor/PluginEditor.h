@@ -11,10 +11,20 @@
 #include <JuceHeader.h>
 #include "../Processor/PluginProcessor.h"
 #include "../LookAndFeel/ArtieFeel.h"
+#include "../LookAndFeel/NameFeel.h"
+
 #include "../Components/WavetableVisualizer.h"
-#include "../Components/ModSliders.h"
-#include "../Components/ParamSliders.h"
+#include "../Components/LFOSlider.h"
+#include "../Components/EnvSliders.h"
+#include"../Components/GPCSlider.h"
+#include "../Components/WaveMenu.h"
+#include "../Components/FilterComponent.h"
+
+#include"../Components/OscSlider.h"
+#include "../Components/OscillatorComponent.h"
 #include "../Components/EnvelopeComponent/EnvelopeVisualizer.h"
+
+#include "../Components/MainMenu/MainMenuButton.h"
 
 
 
@@ -38,50 +48,37 @@ public:
     void resized() override;
 
     void timerCallback() override;
-    void buttonClicked(Button*) override;
 
+    void buttonClicked(Button*) override;
+    void buttonStateChanged(Button*) override;
+
+    
 private:
     ArtieFeel artieFeel;
+    NameFeel  nameFeel;
     Colour  color1, color2;
+    float lineHeight = 0.5f;
 
-    std::unique_ptr<Label> modLabel;
-    std::unique_ptr<WavetableVisualizer> wavetableVisualizer;
+    std::unique_ptr<LFOSlider> lfoSlider1;
+    std::unique_ptr<LFOSlider> lfoSlider2;
+    std::unique_ptr<LFOSlider> lfoSlider3;
 
-    std::unique_ptr<ModSliders> modSliders1;
-    std::unique_ptr<ModSliders> modSliders2;
+    std::unique_ptr<EnvSliders> envSlider1;
+    std::unique_ptr<EnvSliders> envSlider2;
+    std::unique_ptr<EnvSliders> envSlider3;
 
-    std::unique_ptr<ModSliders> envSliders1;
-    std::unique_ptr<ModSliders> envSliders2;
+    std::unique_ptr<OscillatorComponent> oscillator1;
+    std::unique_ptr<OscillatorComponent> oscillator2;
 
-    std::unique_ptr<ParamSliders> adsrSliders1;
-    std::unique_ptr<ParamSliders> adsrSliders2;
+    std::unique_ptr<FilterComponent> filterComponent;
 
-    std::unique_ptr<ParamSliders> lfoSliders1;
-    std::unique_ptr<ParamSliders> lfoSliders2;
+    std::unique_ptr<TextButton> noteOn;
+    std::unique_ptr<TextButton> noteOff;
 
-    std::unique_ptr<ParamSliders> filtSliders;
+    std::unique_ptr<MainMenuButton> menuButton;
+    //============================================================================
 
-    std::unique_ptr<Slider> filtSlider;
-    std::unique_ptr<Slider> waveSlider;
-
-    //==============================================================================
-
-    std::unique_ptr<TextButton> modButtonLFO1; // which lfo is being controlled in matrix
-    std::unique_ptr<TextButton> modButtonLFO2;
-
-    std::unique_ptr<TextButton> modButtonEnv1; // which env in matrix
-    std::unique_ptr<TextButton> modButtonEnv2;
-
-    std::unique_ptr<TextButton> buttonADSR1; // which env slider
-    std::unique_ptr<TextButton> buttonADSR2;
-
-    std::unique_ptr<TextButton> buttonLFO1; // which LFO slider
-    std::unique_ptr<TextButton> buttonLFO2;
-
-    std::unique_ptr<EnvelopeVisualizer> envVisual;
-
-    std::unique_ptr<AudioProcessorValueTreeState::SliderAttachment> waveAttach;
-
+    std::unique_ptr<Label> nameLabel;
 
     GayPolyCommunistAudioProcessor& audioProcessor;
 

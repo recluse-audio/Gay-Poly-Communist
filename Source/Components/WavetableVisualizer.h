@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "../WaveTable/WaveTableVector.h"
+#include "../WaveTable/WavetableParser.h"
 #include "../Processor/PluginProcessor.h"
 
 //==============================================================================
@@ -21,7 +22,7 @@ class WavetableVisualizer : public juce::Component,
     public FileDragAndDropTarget //, juce::Timer
 {
 public:
-    WavetableVisualizer(GayPolyCommunistAudioProcessor&);
+    WavetableVisualizer(int osc, GayPolyCommunistAudioProcessor&, WaveTableVector&);
     ~WavetableVisualizer() override;
 
     void paint (juce::Graphics& g) override;
@@ -44,8 +45,8 @@ public:
     
     
 private:
+    int oscNum = 1;
     WaveTableVector& waveVector;
-    GayPolyCommunistAudioProcessor& processor;
     
     std::unique_ptr<juce::Label> valueLabel;
     juce::String value = "value";
@@ -62,7 +63,9 @@ private:
     float bgHue = 0.f;
     float bgVal;
 
+    std::unique_ptr<WavetableParser> waveParser;
     
-    
+    GayPolyCommunistAudioProcessor& processor;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WavetableVisualizer)
 };
