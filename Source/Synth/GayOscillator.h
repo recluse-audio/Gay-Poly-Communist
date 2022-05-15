@@ -43,17 +43,14 @@ public:
     void setFrequency(Type newValue, bool force = false)
     {
         waveVector.setFrequency(newValue);
-        // processorChain.template get<oscIndex>().setFrequency (newValue, force);
     }
 
     void setLevel(Type newValue)
     {
-        // processorChain.template get<gainIndex>().setGainLinear (newValue);
     }
 
     void reset() noexcept
     {
-        processorChain.reset();
     }
 
     //==============================================================================
