@@ -100,18 +100,13 @@ public:
         auto freqHz = (float)getCurrentlyPlayingNote().getFrequencyInHertz();
 
         pitch = freqHz;
-        osc1.noteOn(velocity, freqHz);
-        osc2.noteOn(velocity, freqHz);
 
-        env1.setParameters(envParam1);
         env1.noteOn();
-
-        env2.setParameters(envParam2);
         env2.noteOn();
-
-        env3.setParameters(envParam3);
         env3.noteOn();
 
+        osc1.noteOn(velocity, freqHz);
+        osc2.noteOn(velocity, freqHz);
     }
 
     //==============================================================================
@@ -149,31 +144,38 @@ public:
                 incrementFilter();
 
                 auto sample = (osc1.getNextSample() + osc2.getNextSample()) * env1.getCurrentValue();
-
+                
                 for (int channel = 0; channel < outputBuffer.getNumChannels(); channel++)
                 {
                     // TO DO: Pan settings for osc?
-                    blockWrite[channel][sampleIndex] = sample;
+                    blockWrite[channel][sampleIndex] += sample * 0.3f;
                 }
             }
             else
             {
-                clearCurrentNote();
+               // Not only does the voice release with this 'clearCurrentNote()' commented out
+               // It resolves a clicking noise I was dealing with
+               // How does this work?
+                
+               // clearCurrentNote();
                 break;
             }
         }
+        if (isFiltering)
+        {
+            auto block = dsp::AudioBlock<float>(outputBuffer);
+            auto blockToUse = block.getSubBlock((size_t)startSample, (size_t)numSamples);
+            auto contextToUse = dsp::ProcessContextReplacing<float>(blockToUse);
 
-        auto block = dsp::AudioBlock<float>(outputBuffer);
-        auto blockToUse = block.getSubBlock((size_t)startSample, (size_t)numSamples);
-        auto contextToUse = dsp::ProcessContextReplacing<float>(blockToUse);
+            filter.setCutoffFrequencyHz(filtFreq->getCurrentValue());
+            filter.setDrive(filtDrive->getCurrentValue());
+            /*
+                TO DO: fix GayParam so I can do things like init 'val' and other stuff
+            */
+            filter.setResonance(jlimit(0.f, 1.f, filtRes->getCurrentValue()));
+            filter.process(contextToUse);
+        }
         
-        filter.setCutoffFrequencyHz(filtFreq->getCurrentValue());
-        filter.setDrive(filtDrive->getCurrentValue());
-        /*
-            TO DO: fix GayParam so I can do things like init 'val' and other stuff
-        */
-        filter.setResonance(jlimit(0.f, 1.f, filtRes->getCurrentValue()));
-        filter.process(contextToUse);
     }
 
 
@@ -209,7 +211,9 @@ public:
     void update(AudioProcessorValueTreeState& apvts)
     {  
         //////////////////// VOICE ////////////////////
-        
+        auto filterMode = apvts.getRawParameterValue("Filter Mode")->load();
+        updateFilterMode(filterMode);
+
         // set value on filter params (these are GayParam(s) that exist in the voice class)
         filtFreq->setValue(apvts.getRawParameterValue("Filter Freq")->load());
         filtFreq->setLFOScale(apvts.getRawParameterValue("Filter LFO Scale")->load());
@@ -222,8 +226,6 @@ public:
         filtRes->setValue(apvts.getRawParameterValue("Filter Res")->load());
         filtRes->setLFOScale(apvts.getRawParameterValue("Res LFO Scale")->load());
         filtRes->setEnvScale(apvts.getRawParameterValue("Res Env Scale")->load());
-
-
 
         // assign filter modulation sources (occurs in voice class not oscillator)
         auto fLFO = apvts.getRawParameterValue("Filter LFO Source")->load();
@@ -297,6 +299,10 @@ public:
         auto rel3 = apvts.getRawParameterValue("RELEASE 3")->load();
         envParam3 = GayADSR::Parameters(atk3, dec3, sus3, rel3);
 
+        env1.setParameters(envParam1);
+        env2.setParameters(envParam2);
+        env3.setParameters(envParam3);
+
         //////////////// OSCILLATORS ///////////////
         
         // oscillator 1 params
@@ -356,6 +362,29 @@ public:
         assignOscMods(osc2, gLFO2, wLFO2, pLFO2, gEnv2, wEnv2, pEnv2);
     }
 
+    void updateFilterMode(int mode)
+    {
+        switch (mode)
+        {
+        case 0:
+            {
+                isFiltering = true;
+                filter.setMode(juce::dsp::LadderFilter<float>::Mode::HPF24);
+            }
+            break;
+
+        case 1:
+            {
+                isFiltering = true;
+                filter.setMode(dsp::LadderFilter<float>::Mode::LPF24);
+            }
+            break;
+
+        case 2:
+            isFiltering = false;
+            break;
+        }
+    }
     WaveTableVector& getTable(int oscNumber)
     {
         if (oscNumber == 1)
@@ -379,6 +408,18 @@ public:
         else
         {
             osc2.loadTables(tableFilePath);
+        }
+    }
+
+    void loadTableFromBuffer(AudioBuffer<float>& waveBuffer, int oscNum)
+    {
+        if (oscNum == 1)
+        {
+            osc1.loadTableFromBuffer(waveBuffer);
+        }
+        else
+        {
+            osc2.loadTableFromBuffer(waveBuffer);
         }
     }
 
@@ -529,8 +570,10 @@ public:
         case 3: lfoDepth3->assignEnvelope(&env3); break;
         }
     }
+
 private:
    dsp::LadderFilter<float> filter;
+   bool isFiltering = true;
 
    GayOscillator osc1, osc2;
     
@@ -544,7 +587,6 @@ private:
    std::unique_ptr<GayParam> lfoDepth1, lfoDepth2, lfoDepth3;
 
    double glideTime = 0.01;
-
 
    float pitch = 0.f;
 };

@@ -17,6 +17,8 @@ WavetableVisualizer::WavetableVisualizer(int osc, GayPolyCommunistAudioProcessor
 {
     setSize(400, 150);
     setNewWaveColour(juce::Colours::white);
+
+    waveParser = std::make_unique<WavetableParser>(processor);
 }
 
 WavetableVisualizer::~WavetableVisualizer()
@@ -54,9 +56,10 @@ void WavetableVisualizer::paint (juce::Graphics& g)
 
         }
         auto waveVal = waveParam->getValue();
+        auto mappedVal = jmap(waveVal, 0.f, (float)waveVector.getArraySize() - 1);
         // i chose to calc this here as opposed to just doing it in the vector because I couldn't smooth the waveIndices (not sure if this is smart)_
         // They are potentially changing at the sample level so I thought it best to pass the smoothed wavePos value only
-        int lowerWaveIndex = (int)waveVal;
+        int lowerWaveIndex = (int)mappedVal;
         int upperWaveIndex = lowerWaveIndex + 1;
 
         if (upperWaveIndex > waveVector.getArraySize())
@@ -64,10 +67,13 @@ void WavetableVisualizer::paint (juce::Graphics& g)
             upperWaveIndex = 0;
         }
         
-        float interp = waveVal - (float)lowerWaveIndex;
+        float interp = mappedVal - (float)lowerWaveIndex;
 
-        auto buffRead0 = waveVector.getLowerWave(lowerWaveIndex)->getBuffer().getReadPointer(0);
-        auto buffRead1 = waveVector.getUpperWave(upperWaveIndex)->getBuffer().getReadPointer(0);
+        auto waveLow = waveVector.getLowerWave(lowerWaveIndex)->getBuffer();
+        auto waveHigh = waveVector.getUpperWave(upperWaveIndex)->getBuffer();
+
+        auto buffRead0 = waveLow.getReadPointer(0);
+        auto buffRead1 = waveHigh.getReadPointer(0);
 
         float waveIncrement = (float)w / waveVector.getTableSize();
 
@@ -112,7 +118,10 @@ void WavetableVisualizer::filesDropped(const StringArray& files, int x, int y)
 {
     processor.shouldProcess(false);
 
-    processor.loadWaveTables(files, oscNum);
-
+    auto file = File(files[0]);
+    waveParser->loadFileToOsc(file, oscNum);
+    
+   // processor.loadWaveTables(files, oscNum);
+    
     processor.shouldProcess(true);
 }

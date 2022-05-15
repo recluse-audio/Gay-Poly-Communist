@@ -20,10 +20,12 @@ public:
 
     GaySynth() 
     {
-        for (size_t i = 0; i < maxNumVoices; ++i)
+        for (size_t i = 0; i <= maxNumVoices; ++i)
+        {
             addVoice(new GayVoice());
+        }
 
-        setVoiceStealingEnabled(false);
+        setVoiceStealingEnabled(true);
     }
     ~GaySynth() {}
 
@@ -32,7 +34,9 @@ public:
         setCurrentPlaybackSampleRate(spec.sampleRate);
 
         for (auto* v : voices)
+        {
             dynamic_cast<GayVoice*> (v)->prepare(spec);
+        }
 
     }
 
@@ -55,3 +59,4 @@ private:
         MPESynthesiser::renderNextSubBlock(outputAudio, startSample, numSamples);
     }
 };
+ 

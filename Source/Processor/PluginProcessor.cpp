@@ -23,6 +23,8 @@ GayPolyCommunistAudioProcessor::GayPolyCommunistAudioProcessor()
 #endif
 {
     apvts.state.addListener(this);
+
+
     waveDatabase.loadFiles();
     update();
 }
@@ -149,14 +151,14 @@ void GayPolyCommunistAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
 
     if (noteOn.get())
     {
-        MidiMessage m(MidiMessage::noteOn(1, 60, 1.f));
+        MidiMessage m(MidiMessage::noteOn(1, 36, 1.f));
         m.setTimeStamp(Time::getMillisecondCounterHiRes() * 0.001);
         midiMessages.addEvent(m, 128); // put at end of buffer because I don't know where to put it
         noteOn = false;
     }
     if (noteOff.get())
     {
-        MidiMessage m(MidiMessage::noteOff(1, 60, 0.5f));
+        MidiMessage m(MidiMessage::noteOff(1, 36, 0.5f));
         midiMessages.addEvent(m, 128);
         noteOff = false;
     }
@@ -189,13 +191,17 @@ juce::AudioProcessorEditor* GayPolyCommunistAudioProcessor::createEditor()
 //==============================================================================
 void GayPolyCommunistAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
+    juce::ValueTree copyState = apvts.copyState();
+    std::unique_ptr<juce::XmlElement> xml = copyState.createXml();
+    copyXmlToBinary(*xml.get(), destData);
 
 }
 
 void GayPolyCommunistAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<juce::XmlElement> xml = getXmlFromBinary(data, sizeInBytes);
+    juce::ValueTree copyState = juce::ValueTree::fromXml(*xml.get());
+    apvts.replaceState(copyState);
 }
 
 void GayPolyCommunistAudioProcessor::update()
@@ -209,26 +215,26 @@ juce::AudioProcessorValueTreeState::ParameterLayout GayPolyCommunistAudioProcess
     std::vector<std::unique_ptr<juce::RangedAudioParameter>> params;
 
     // mods
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("ATTACK 1", "Attack 1", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f), 0.5f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("DECAY 1", "Decay 1", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01), 0.2f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("ATTACK 1", "Attack 1", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f, 0.5f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("DECAY 1", "Decay 1", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01, 0.5f), 0.2f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("SUSTAIN 1", "Sustain 1", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.8f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("RELEASE 1", "Release 1", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("RELEASE 1", "Release 1", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f, 0.5f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth 1", "LFO Depth 1", juce::NormalisableRange<float>(0.0f, 1.0f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate 1", "LFO Rate 1", juce::NormalisableRange<float>(0.0f, 20.0f), 10.f));
 
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("ATTACK 2", "Attack 2", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f), 2.5f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("DECAY 2", "Decay 2", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.2f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("ATTACK 2", "Attack 2", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f, 0.5f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("DECAY 2", "Decay 2", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f, 0.5f), 0.2f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("SUSTAIN 2", "Sustain 2", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.8f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("RELEASE 2", "Release 2", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f), 2.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("RELEASE 2", "Release 2", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f, 0.5f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth 2", "LFO Depth 2", juce::NormalisableRange<float>(0.0f, 1.0f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate 2", "LFO Rate 2", juce::NormalisableRange<float>(0.0f, 20.0f), 10.f));
 
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("ATTACK 3", "Attack 3", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f), 2.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("ATTACK 3", "Attack 3", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f, 0.5f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("DECAY 3", "Decay 3", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.2f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("SUSTAIN 3", "Sustain 3", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.8f));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("RELEASE 3", "Release 3", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f), 2.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("SUSTAIN 3", "Sustain 3", juce::NormalisableRange<float>(0.0f, 1.0f, 0.01f, 0.5f), 0.8f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("RELEASE 3", "Release 3", juce::NormalisableRange<float>(0.0f, 3.0f, 0.01f, 0.5f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth 3", "LFO Depth 3", juce::NormalisableRange<float>(0.0f, 1.0f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate 3", "LFO Rate 3", juce::NormalisableRange<float>(0.0f, 20.0f), 10.f));
@@ -247,7 +253,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout GayPolyCommunistAudioProcess
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 1 Env Source", "Pitch 1 Env Source", 0, 3, 0));// 0 = no modulator
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 1 Env Scale", "Pitch 1 Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 Position", "Wave 1 Position", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 Position", "Wave 1 Position", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 LFO Source", "Wave 1 LFO Source", 0, 3, 0));// 0 = no modulator
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 LFO Scale", "Wave 1 LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 Env Source", "Wave 1 Env Source", 0, 3, 0));
@@ -266,7 +272,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout GayPolyCommunistAudioProcess
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 2 Env Source", "Pitch 2 Env Source", 0, 3, 0));// 0 = no modulator
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 2 Env Scale", "Pitch 2 Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 Position", "Wave 2 Position", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 Position", "Wave 2 Position", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.65f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 LFO Source", "Wave 2 LFO Source", 0, 3, 0));// 0 = no modulator
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 LFO Scale", "Wave 2 LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 Env Source", "Wave 2 Env Source", 0, 3, 0));
@@ -280,7 +286,6 @@ juce::AudioProcessorValueTreeState::ParameterLayout GayPolyCommunistAudioProcess
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter Env Source", "Filter Env Source", 0, 3, 0));// 0 = no modulator
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter Env Scale", "Filter Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
-
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter Res", "Filter Res", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Res LFO Source", "Res LFO Source", 0, 3, 0));// 0 = no modulator
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Res LFO Scale", "Res LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
@@ -292,6 +297,8 @@ juce::AudioProcessorValueTreeState::ParameterLayout GayPolyCommunistAudioProcess
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Drive LFO Scale", "Drive LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Drive Env Source", "Drive Env Source", 0, 3, 0));// 0 = no modulator
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Drive Env Scale", "Drive Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter Mode", "Filter Mode", 0.f, 2.f, 1.f));// 1 = LPF
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate Env Source 1", "LFO Rate Env Source 1", 0, 3, 0));// 0 = no modulator
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate Env Scale 1", "LFO Rate Env Scale 1", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
@@ -444,6 +451,17 @@ void GayPolyCommunistAudioProcessor::loadWaveTables(const StringArray& files, in
             {
                 voice->loadTables(file, oscNum);
             }
+        }
+    }
+}
+
+void GayPolyCommunistAudioProcessor::loadTableFromBuffer(AudioBuffer<float>& waveBuffer, int oscNum)
+{
+    for (int voiceNum = 0; voiceNum < synth.getNumVoices(); voiceNum++)
+    {
+        if (auto voice = dynamic_cast<GayVoice*>(synth.getVoice(voiceNum)))
+        {
+            voice->loadTableFromBuffer(waveBuffer, oscNum);
         }
     }
 }

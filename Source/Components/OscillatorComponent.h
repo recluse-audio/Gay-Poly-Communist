@@ -73,6 +73,7 @@ public:
         ampSlider->setBoundsRelative(0.05f, 0.7f, 0.3f, 0.28f);
         pitchSlider->setBoundsRelative(0.4f, 0.7f, 0.3f, 0.28f);
         waveMenu->setBoundsRelative(0.75f, 0.7f, 0.2f, 0.1f);
+        
 
     }
 

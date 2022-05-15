@@ -18,12 +18,13 @@ GayPolyCommunistAudioProcessorEditor::GayPolyCommunistAudioProcessorEditor (GayP
     nameLabel->setLookAndFeel(&nameFeel);
     nameLabel->setAlwaysOnTop(true);
     addAndMakeVisible(nameLabel.get());
-    
 
     setLookAndFeel(&artieFeel);
     color1 = Colours::yellow;
     color2 = Colours::blue;
 
+    menuButton = std::make_unique<MainMenuButton>(audioProcessor);
+    addAndMakeVisible(menuButton.get());
     // params from value tree passed to osc component and assigned to sliders there
     auto gainParams = StringArray({ "Gain 1", "Gain 1 LFO Source", "Gain 1 LFO Scale", "Gain 1 Env Source", "Gain 1 Env Scale", "Gain" });
     auto pitchParams = StringArray({ "Pitch 1", "Pitch 1 LFO Source", "Pitch 1 LFO Scale", "Pitch 1 Env Source", "Pitch 1 Env Scale", "Pitch" });
@@ -74,19 +75,12 @@ GayPolyCommunistAudioProcessorEditor::GayPolyCommunistAudioProcessorEditor (GayP
 
 
     auto filtParams = StringArray({ "Filter Freq", "Filter LFO Source", "Filter LFO Scale", "Filter Env Source", "Filter Env Scale", "Freq" });
-    filtSlider = std::make_unique<OscSlider>(filtParams, audioProcessor, true);
-    filtSlider->setSliderColor(Colours::aquamarine);
-    addAndMakeVisible(filtSlider.get());
-
     auto resParams = StringArray({ "Filter Res", "Res LFO Source", "Res LFO Scale", "Res Env Source", "Res Env Scale", "Reson" });
-    resonSlider = std::make_unique<OscSlider>(resParams, audioProcessor, true);
-    resonSlider->setSliderColor(Colours::aquamarine);
-    addAndMakeVisible(resonSlider.get());
-
     auto driveParams = StringArray({ "Filter Drive", "Drive LFO Source", "Drive LFO Scale", "Drive Env Source", "Drive Env Scale", "Drive" });
-    driveSlider = std::make_unique<OscSlider>(driveParams, audioProcessor, true);
-    driveSlider->setSliderColor(Colours::aquamarine);
-    addAndMakeVisible(driveSlider.get());
+
+    filterComponent = std::make_unique<FilterComponent>
+        (audioProcessor, "Filter Mode", filtParams, resParams, driveParams);
+    addAndMakeVisible(filterComponent.get());
 
     noteOn = std::make_unique<TextButton>("Note On");
     addAndMakeVisible(noteOn.get());
@@ -134,6 +128,8 @@ void GayPolyCommunistAudioProcessorEditor::paint (juce::Graphics& g)
 
 void GayPolyCommunistAudioProcessorEditor::resized()
 {
+    menuButton->setBoundsRelative(0.85f, 0.01f, 0.075f, 0.07f);
+
     lineHeight = getHeight() * 0.6f;
     nameLabel->setBoundsRelative(0.05f, 0.f, 0.4f, 0.1f);
 
@@ -153,9 +149,10 @@ void GayPolyCommunistAudioProcessorEditor::resized()
     envSlider2->setBoundsRelative(0.355f, envY, envW, envH);
     envSlider3->setBoundsRelative(0.66f, envY, envW, envH);
 
-    filtSlider->setBoundsRelative(0.86f, 0.115f, 0.1f, 0.14f);
-    resonSlider->setBoundsRelative(0.86f, 0.265f, 0.1f, 0.14f);
-    driveSlider->setBoundsRelative(0.86f, 0.415f, 0.1f, 0.14f);
+    filterComponent->setBoundsRelative(0.86f, 0.115f, 0.1f, 0.46f);
+    //filtSlider->setBoundsRelative(0.86f, 0.115f, 0.1f, 0.14f);
+    //resonSlider->setBoundsRelative(0.86f, 0.265f, 0.1f, 0.14f);
+    //driveSlider->setBoundsRelative(0.86f, 0.415f, 0.1f, 0.14f);
 
 }
 

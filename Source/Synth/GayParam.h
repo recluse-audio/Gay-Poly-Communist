@@ -26,11 +26,16 @@ public:
     GayParam(ParamType t) : type(t) {}
     ~GayParam() {}
 
-    void prepare(double sampleRate) { value.reset(sampleRate, 0.01); }
-    void setValue(float val) { value.setTargetValue(val); }
+    void prepare(double sampleRate) 
+    { 
+        value.reset(sampleRate, 0.01); 
+    }
 
+    void setValue(float val) 
+    { 
+        value.setTargetValue(val); 
+    }
 
-    
     void setOffset(float off)
     {
         offset = off; // currently just for pitch

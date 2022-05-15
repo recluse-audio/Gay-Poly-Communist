@@ -18,10 +18,13 @@
 #include "../Components/EnvSliders.h"
 #include"../Components/GPCSlider.h"
 #include "../Components/WaveMenu.h"
+#include "../Components/FilterComponent.h"
 
 #include"../Components/OscSlider.h"
 #include "../Components/OscillatorComponent.h"
 #include "../Components/EnvelopeComponent/EnvelopeVisualizer.h"
+
+#include "../Components/MainMenu/MainMenuButton.h"
 
 
 
@@ -64,18 +67,16 @@ private:
     std::unique_ptr<EnvSliders> envSlider2;
     std::unique_ptr<EnvSliders> envSlider3;
 
-    std::unique_ptr<OscSlider> filtSlider;
-    std::unique_ptr<OscSlider> resonSlider;
-    std::unique_ptr<OscSlider> driveSlider;
-
-
     std::unique_ptr<OscillatorComponent> oscillator1;
     std::unique_ptr<OscillatorComponent> oscillator2;
+
+    std::unique_ptr<FilterComponent> filterComponent;
 
     std::unique_ptr<TextButton> noteOn;
     std::unique_ptr<TextButton> noteOff;
 
-    //==============================================================================
+    std::unique_ptr<MainMenuButton> menuButton;
+    //============================================================================
 
     std::unique_ptr<Label> nameLabel;
 

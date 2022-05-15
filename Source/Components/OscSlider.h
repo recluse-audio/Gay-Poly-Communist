@@ -103,11 +103,11 @@ public:
 
     void paint (juce::Graphics& g) override
     {
-        checkColors();
+        checkModColors();
         resetSliderColors();
+
         lfoButton->setColour(TextButton::buttonColourId, lfoColor);
         envButton->setColour(TextButton::buttonColourId, envColor);
-        
 
         drawModVisual();
 
@@ -279,8 +279,11 @@ public:
         return envVal;
     }
 
-    void checkColors()
+    void checkModColors()
     {
+        lfoNum = audioProcessor.getValueTree().getRawParameterValue(paramArray[ParamStrings::lfoSource])->load();
+        envNum = audioProcessor.getValueTree().getRawParameterValue(paramArray[ParamStrings::envSource])->load();
+
         switch ((int)lfoNum)
         {
         case 0: lfoColor = sliderColor.darker(); break;
@@ -345,10 +348,9 @@ public:
             if (audioProcessor.isMappingLFO()) // 'isMapping' set by LFO button
             {
                 RangedAudioParameter* pParam = audioProcessor.getValueTree().getParameter(paramArray[ParamStrings::lfoSource]);
-                lfoNum = audioProcessor.getLFOSource();
-
+                
                 pParam->beginChangeGesture();
-                pParam->setValueNotifyingHost(pParam->convertTo0to1(lfoNum));
+                pParam->setValueNotifyingHost(pParam->convertTo0to1(audioProcessor.getLFOSource()));
                 pParam->endChangeGesture();
                 audioProcessor.setMappingLFO(false, 0.f);
             }
@@ -370,10 +372,9 @@ public:
             if (audioProcessor.isMappingEnv()) // assign or remove a envelope from mapping
             {
                 RangedAudioParameter* pParam = audioProcessor.getValueTree().getParameter(paramArray[ParamStrings::envSource]);
-                envNum = audioProcessor.getEnvSource();
 
                 pParam->beginChangeGesture();
-                pParam->setValueNotifyingHost(pParam->convertTo0to1(envNum));
+                pParam->setValueNotifyingHost(pParam->convertTo0to1(audioProcessor.getEnvSource()));
                 pParam->endChangeGesture();
                 audioProcessor.setMappingEnv(false, 0.f);
             }

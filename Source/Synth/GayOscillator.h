@@ -81,6 +81,11 @@ public:
         waveVector.loadTables(filePath);
     }
 
+    void loadTableFromBuffer(AudioBuffer<float>& waveBuffer)
+    {
+        waveVector.loadTableFromBuffer(waveBuffer);
+    }
+
     void update(float g, float gLFOScale, float gEnvScale, float w, float wLFOScale, float wEnvScale, float p, float pLFOScale, float pEnvScale)
     {
         gain->setValue(g);

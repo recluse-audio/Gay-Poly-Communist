@@ -86,6 +86,7 @@ public:
     WaveDatabase& getWaveDatabase();
 
     void loadWaveTables(const StringArray& filePath, int oscNum);
+    void loadTableFromBuffer(AudioBuffer<float>& wave, int oscNum);
 
     float getLFODepth(int lfoNum);
 private:

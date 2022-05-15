@@ -12,6 +12,7 @@
 
 #include <JuceHeader.h>
 #include "../WaveTable/WaveTableVector.h"
+#include "../WaveTable/WavetableParser.h"
 #include "../Processor/PluginProcessor.h"
 
 //==============================================================================
@@ -46,7 +47,6 @@ public:
 private:
     int oscNum = 1;
     WaveTableVector& waveVector;
-    GayPolyCommunistAudioProcessor& processor;
     
     std::unique_ptr<juce::Label> valueLabel;
     juce::String value = "value";
@@ -63,7 +63,9 @@ private:
     float bgHue = 0.f;
     float bgVal;
 
+    std::unique_ptr<WavetableParser> waveParser;
     
-    
+    GayPolyCommunistAudioProcessor& processor;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WavetableVisualizer)
 };

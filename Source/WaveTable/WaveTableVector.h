@@ -29,7 +29,7 @@ public:
         }
         //auto filePath = String("D:/WaveTables/Echo Sound Works Core Tables/FM/");
         //loadTables("C:/ProgramData/Recluse-Audio/Wavetables/Echo Sound Works Modular/");
-        loadTables("C:/Users/ryand/Desktop/Echo Sound Works Core Tables/Saw/");
+        loadTables("C:/ProgramData/Recluse-Audio/GPC/Wavetables/Vector 1");
     }
 
     ~WaveTableVector() 
@@ -82,9 +82,8 @@ public:
         }
         else
         {
-            
             if (waveFile.hasFileExtension(".wav"))
-            {
+            {    
                 arraySize++; // accounting for added table
                 std::unique_ptr<AudioFormatReader> formatReader{ formatManager.createReaderFor(waveFile) };
                 formatReader->read(&tableArray[arraySize-1]->getBuffer(), 0, tableSize, 0, true, false);
@@ -95,6 +94,11 @@ public:
         prepTables();
     }
 
+    void loadTableFromBuffer(AudioBuffer<float>& waveBuffer)
+    {
+        arraySize++;
+        tableArray[arraySize - 1]->passBuffer(waveBuffer);
+    }
 
     void setFrequency(float freq)
     {
@@ -184,6 +188,7 @@ public:
         return arraySize;
     }
 private:
+
     OwnedArray<WaveTable> tableArray;
     AudioFormatManager formatManager;
     CriticalSection lock;

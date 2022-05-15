@@ -7,6 +7,23 @@
   <MAINGROUP id="IbflzF" name="Gay Poly Communist">
     <GROUP id="{CFF36181-D2F0-986C-BA47-E1BB90F956DE}" name="Source">
       <GROUP id="{16009940-43FB-6390-6EF6-FE52B8E9CDA3}" name="Components">
+        <GROUP id="{8919CB94-A40C-0B30-B78D-B343731BF3D4}" name="MainMenu">
+          <FILE id="BzDjmj" name="LOGO_SVG.svg" compile="0" resource="1" file="../../ProgramData/Recluse-Audio/LOGO_SVG.svg"/>
+          <FILE id="ckZjs6" name="MainMenuButton.h" compile="0" resource="0"
+                file="Source/Components/MainMenu/MainMenuButton.h"/>
+          <FILE id="xBU0Q8" name="MainMenuComponent.h" compile="0" resource="0"
+                file="Source/Components/MainMenu/MainMenuComponent.h"/>
+          <GROUP id="{F56AFCB1-087E-DCB3-D563-15F923FBC36D}" name="MainMenuSelections">
+            <FILE id="I3DA6w" name="ParameterDictionaryComponent.h" compile="0"
+                  resource="0" file="Source/Components/MainMenu/MainMenuSelections/ParameterDictionaryComponent.h"/>
+            <FILE id="IZmTiF" name="PresetMenuComponent.h" compile="0" resource="0"
+                  file="Source/Components/MainMenu/MainMenuSelections/PresetMenuComponent.h"/>
+            <FILE id="OzlbRp" name="TutorialComponent.h" compile="0" resource="0"
+                  file="Source/Components/MainMenu/MainMenuSelections/TutorialComponent.h"/>
+          </GROUP>
+        </GROUP>
+        <FILE id="hZdv4U" name="FilterComponent.h" compile="0" resource="0"
+              file="Source/Components/FilterComponent.h"/>
         <FILE id="iyl9Wo" name="WaveMenu.h" compile="0" resource="0" file="Source/Components/WaveMenu.h"/>
         <FILE id="ufHVah" name="OscillatorComponent.h" compile="0" resource="0"
               file="Source/Components/OscillatorComponent.h"/>
@@ -41,6 +58,9 @@
         <FILE id="LsbKj3" name="GayOscillator.h" compile="0" resource="0" file="Source/Synth/GayOscillator.h"/>
       </GROUP>
       <GROUP id="{A51FEACE-1059-FAF5-25C8-E299B238C78B}" name="Wavetable">
+        <FILE id="Qq1nZY" name="WavetableParser.h" compile="0" resource="0"
+              file="Source/WaveTable/WavetableParser.h"/>
+        <FILE id="tdgYwx" name="Yin.h" compile="0" resource="0" file="Source/WaveTable/Yin.h"/>
         <FILE id="v9Pt73" name="WaveTableLoader.h" compile="0" resource="0"
               file="Source/WaveTable/WaveTableLoader.h"/>
         <FILE id="rGoCKo" name="WaveTableVector.h" compile="0" resource="0"
