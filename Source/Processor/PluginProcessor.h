@@ -106,6 +106,8 @@ private:
     float RMS = 0.f;
 
     WaveDatabase waveDatabase;
+    String osc1WavePath = {""};
+    String osc2WavePath = {""};
 
     void valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) override
     {

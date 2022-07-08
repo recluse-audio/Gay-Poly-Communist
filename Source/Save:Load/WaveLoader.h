@@ -11,6 +11,8 @@
 #pragma once
 #include <JuceHeader.h>
 
+static const juce::String waveFolderPath = {"/Library/Application Support/Recluse-Audio/GPC/Wavetables/Signature Wavetables/"};
+
 class WaveDatabase
 {
 public:
@@ -51,7 +53,7 @@ public:
 
     void loadFiles()
     {
-        auto folders = juce::File("C:/ProgramData/Recluse-Audio/GPC/WaveTables/").findChildFiles(1, true);
+        auto folders = juce::File(waveFolderPath).findChildFiles(1, true);
 
         for (int i = 0; i < folders.size(); i++)
         {
@@ -91,8 +93,11 @@ public:
         return allWavePaths[index];
     }
 
+    
 private:
     OwnedArray<WaveFolder> waveFolders;
     StringArray allWavePaths; // see 'getPathFromIndex'
+
+
 
 };

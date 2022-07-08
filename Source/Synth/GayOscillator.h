@@ -53,14 +53,7 @@ public:
     //==============================================================================
     void setFrequency(float newValue, bool force = false)
     {
-<<<<<<< HEAD
-        waveVector.setFrequency(newValue);
-    }
 
-    void setLevel(Type newValue)
-    {
-    }
-=======
         pitch->setValue(newValue);
         //waveVector.setFrequency(newValue);
     }
@@ -68,17 +61,13 @@ public:
     void setLevel(float newValue){}
 
     void reset() noexcept{}
->>>>>>> ed4bc7c8d6e98ab459f40b30c1c89b3989142bee
 
     // iterates and returns
     float getNextSample()
     {
-<<<<<<< HEAD
-=======
         waveVector.setWave(wave->getNextValue());
         waveVector.setFrequency(pitch->getNextValue());
         return waveVector.getNextSample() * gain->getNextValue();
->>>>>>> ed4bc7c8d6e98ab459f40b30c1c89b3989142bee
     }
 
     //==============================================================================
@@ -162,6 +151,8 @@ private:
     WaveTableVector waveVector;
     double glideTime = 0.1;
     std::unique_ptr<GayParam> gain, wave, pitch;
+    
+    
 
 };
 

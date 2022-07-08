@@ -77,7 +77,7 @@ void WavetableVisualizer::paint (juce::Graphics& g)
 
         float waveIncrement = (float)w / waveVector.getTableSize();
 
-        for (int i = 0; i <= waveVector.getTableSize(); ++i)
+        for (int i = 0; i <= waveVector.getTableSize() - 1; ++i)
         {
             auto x = i * waveIncrement;
             auto value0 = buffRead0[i] * (1.f - interp);

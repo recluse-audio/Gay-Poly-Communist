@@ -53,20 +53,21 @@ public:
         {
             auto parentScreen = getParentMonitorArea();
             auto menuArea = Rectangle<int>(getParentWidth() * 0.5f, parentScreen.getY(), getParentWidth() / 2, getParentHeight());
-            int selection = menu->showAt(menuArea, 0, 100);
-
-            if (selection == 0)
-            {
-                menu->dismissAllActiveMenus();
-            }
-            if (selection > 0)
-            {
-                auto path = audioProcessor.getWaveDatabase().getPathFromIndex(selection - 1); // item ids start at 1
-                audioProcessor.loadWaveTables(path, oscNum);
-                // use this if I want to display the wavevector name
-                // 
-               // fileName = database.getFileNameFromIndex(selection - 1); 
-            }
+            
+            //int selection = menu->showAt(menuArea, 0, 100);
+            menu->showMenuAsync(PopupMenu::Options().withTargetScreenArea(menuArea),
+           [this](int selection)
+           {
+                if (selection == 0)
+                {
+                    menu->dismissAllActiveMenus();
+                }
+                if (selection > 0)
+                {
+                    auto path = audioProcessor.getWaveDatabase().getPathFromIndex(selection - 1);
+                    audioProcessor.loadWaveTables(path, oscNum);
+                }
+            });
         }
     }
 

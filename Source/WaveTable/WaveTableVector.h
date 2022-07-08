@@ -12,6 +12,7 @@
 #include <JuceHeader.h>
 #include "WaveTable.h"
 
+static const juce::String wavetablePath = {"/Library/Application Support/Recluse-Audio/GPC/Wavetables/Signature Wavetables/Test/"};
 
 class WaveTableVector
 {
@@ -27,9 +28,7 @@ public:
         {
             tableArray.add(new WaveTable(tableSize));
         }
-        //auto filePath = String("D:/WaveTables/Echo Sound Works Core Tables/FM/");
-        //loadTables("C:/ProgramData/Recluse-Audio/Wavetables/Echo Sound Works Modular/");
-        loadTables("C:/ProgramData/Recluse-Audio/GPC/Wavetables/Vector 1");
+        loadTables(wavetablePath);
     }
 
     ~WaveTableVector() 

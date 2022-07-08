@@ -191,9 +191,21 @@ juce::AudioProcessorEditor* GayPolyCommunistAudioProcessor::createEditor()
 //==============================================================================
 void GayPolyCommunistAudioProcessor::getStateInformation (juce::MemoryBlock& destData)
 {
-    juce::ValueTree copyState = apvts.copyState();
-    std::unique_ptr<juce::XmlElement> xml = copyState.createXml();
-    copyXmlToBinary(*xml.get(), destData);
+    XmlElement xmlRoot( "SessionData" );
+
+    // All the parameters
+    std::unique_ptr<juce::XmlElement> valueTreeXml = apvts.copyState().createXml();
+    valueTreeXml->setTagName("Parameter");
+    
+    // Path to current wavetable
+    std::unique_ptr<juce::XmlElement> waveTablePathXml = std::make_unique<juce::XmlElement>();
+    valueTreeXml->setTagName("Wavetable");
+    
+    // Path to current preset
+    std::unique_ptr<juce::XmlElement> presetPathXml = std::make_unique<juce::XmlElement>();
+    valueTreeXml->setTagName("Preset");
+    
+    copyXmlToBinary(xmlRoot, destData);
 
 }
 
@@ -443,6 +455,7 @@ WaveDatabase& GayPolyCommunistAudioProcessor::getWaveDatabase()
 
 void GayPolyCommunistAudioProcessor::loadWaveTables(const StringArray& files, int oscNum)
 {
+    
     for (auto file : files)
     {
         for (int voiceNum = 0; voiceNum < synth.getNumVoices(); voiceNum++)
