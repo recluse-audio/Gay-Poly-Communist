@@ -7,15 +7,15 @@
   <MAINGROUP id="IbflzF" name="Gay Poly Communist">
     <GROUP id="{CFF36181-D2F0-986C-BA47-E1BB90F956DE}" name="Source">
       <GROUP id="{2B27576B-F11D-BC98-4592-36885FB4AE4E}" name="Save/Load">
-        <FILE id="ByQKbM" name="PresetLoader.cpp" compile="1" resource="0"
-              file="Source/Save:Load/PresetLoader.cpp"/>
-        <FILE id="kBP3F1" name="PresetLoader.h" compile="0" resource="0" file="Source/Save:Load/PresetLoader.h"/>
-        <FILE id="mRQPHb" name="PresetSave.cpp" compile="1" resource="0" file="Source/Save:Load/PresetSave.cpp"/>
-        <FILE id="O9YuE3" name="PresetSave.h" compile="0" resource="0" file="Source/Save:Load/PresetSave.h"/>
-        <FILE id="TUVYRa" name="WaveLoader.cpp" compile="1" resource="0" file="Source/Save:Load/WaveLoader.cpp"/>
-        <FILE id="qGQuhZ" name="WaveLoader.h" compile="0" resource="0" file="Source/Save:Load/WaveLoader.h"/>
-        <FILE id="Dnqw84" name="WaveSaver.cpp" compile="1" resource="0" file="Source/Save:Load/WaveSaver.cpp"/>
-        <FILE id="BHC5bT" name="WaveSaver.h" compile="0" resource="0" file="Source/Save:Load/WaveSaver.h"/>
+        <FILE id="p96ljD" name="PresetLoader.cpp" compile="1" resource="0"
+              file="Source/SaveAndLoad/PresetLoader.cpp"/>
+        <FILE id="F1FQW6" name="PresetLoader.h" compile="0" resource="0" file="Source/SaveAndLoad/PresetLoader.h"/>
+        <FILE id="ccWrVe" name="PresetSaver.cpp" compile="1" resource="0" file="Source/SaveAndLoad/PresetSaver.cpp"/>
+        <FILE id="Zy5OJc" name="PresetSaver.h" compile="0" resource="0" file="Source/SaveAndLoad/PresetSaver.h"/>
+        <FILE id="utMKmL" name="WaveLoader.cpp" compile="1" resource="0" file="Source/SaveAndLoad/WaveLoader.cpp"/>
+        <FILE id="EXesmj" name="WaveLoader.h" compile="0" resource="0" file="Source/SaveAndLoad/WaveLoader.h"/>
+        <FILE id="WJypZQ" name="WaveSaver.cpp" compile="1" resource="0" file="Source/SaveAndLoad/WaveSaver.cpp"/>
+        <FILE id="glX2jR" name="WaveSaver.h" compile="0" resource="0" file="Source/SaveAndLoad/WaveSaver.h"/>
       </GROUP>
       <GROUP id="{FA8739E1-5DE2-C5AF-A1E7-B294DBA8F455}" name="BinaryData">
         <FILE id="PeW5ms" name="LOGO_SVG.svg" compile="0" resource="1" file="LOGO_SVG.svg"/>
@@ -70,7 +70,7 @@
         <FILE id="rKMTPT" name="GayVoice.h" compile="0" resource="0" file="Source/Synth/GayVoice.h"/>
         <FILE id="LsbKj3" name="GayOscillator.h" compile="0" resource="0" file="Source/Synth/GayOscillator.h"/>
       </GROUP>
-      <GROUP id="{A51FEACE-1059-FAF5-25C8-E299B238C78B}" name="Wavetable">
+      <GROUP id="{A51FEACE-1059-FAF5-25C8-E299B238C78B}" name="WaveTable">
         <FILE id="Qq1nZY" name="WavetableParser.h" compile="0" resource="0"
               file="Source/WaveTable/WavetableParser.h"/>
         <FILE id="tdgYwx" name="Yin.h" compile="0" resource="0" file="Source/WaveTable/Yin.h"/>
@@ -92,6 +92,7 @@
         <FILE id="gHZSDd" name="PluginEditor.h" compile="0" resource="0" file="Source/Editor/PluginEditor.h"/>
       </GROUP>
     </GROUP>
+    <FILE id="sQTsLR" name="GPC_Constants.h" compile="0" resource="0" file="Source/GPC_Constants.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
   <EXPORTFORMATS>

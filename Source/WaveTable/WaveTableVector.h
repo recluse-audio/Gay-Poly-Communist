@@ -11,24 +11,32 @@
 #pragma once
 #include <JuceHeader.h>
 #include "WaveTable.h"
+#include "../GPC_Constants.h"
 
-static const juce::String wavetablePath = {"/Library/Application Support/Recluse-Audio/GPC/Wavetables/Signature Wavetables/Test/"};
 
+/*
+    Used to retrieve samples from 2 wavetables out of a vector (array)
+    then interpolate between then based on wavePos at the time of sample retrieval
+ 
+    this is for READING and not calculating phase increments
+    Use an oscillator to set frequency, phase inc, and to retrieveSample() at the right index
+    Same goes for wave position.  That is done by the oscillator
+ 
+ */
 class WaveTableVector
 {
 public:
-    WaveTableVector() : tableSize(2048)
+    WaveTableVector(int maxNumTables, juce::OwnedArray<juce::AudioBuffer<float>>& waveBufferArray)
+    : tableSize(GPC_CONSTANTS::TABLE_SIZE)
     {
-        formatManager.registerBasicFormats();
 
         // intitialize 100, then just change their waveform 
         // we keep track of arraySize so that we can map our 0-1 wave value to map to an appropriate value
         // Wasn't working to clear the array each time
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < maxNumTables; i++)
         {
             tableArray.add(new WaveTable(tableSize));
         }
-        loadTables(wavetablePath);
     }
 
     ~WaveTableVector() 
@@ -36,95 +44,53 @@ public:
         tableArray.clear(true);
     }
 
-    void prepare(double sampleRate)
+
+    void addTableFromBuffer(juce::AudioBuffer<float>& waveBuffer)
     {
-        mSampleRate = sampleRate;
-        prepTables();
-        waveVal.reset(sampleRate, 0.01);
+        numberOfWaveTables++;
+        tableArray[numberOfWaveTables - 1]->passBuffer(waveBuffer);
     }
-
-    void prepTables()
-    {
-        for (int i = 0; i < tableArray.size(); i++)
-        {
-            tableArray[i]->prepare(mSampleRate);
-        }
-        loading = false;
-
-    }
-
-    /*
-        Loading files into table array
-        Notice that we are tracking arraySize separately because deleting/clearing the array each time was not working for me
-        if the file path leads to a directory (user dragged on a folder of tables) then we rewrite the existing wave at those
-        indices of the table array
-    */
-    void loadTables(StringRef filePath)
+    
+    
+    // clears and reloads buffer with new vector (array) of wavetables
+    void loadVectorFromBufferArray(juce::OwnedArray<juce::AudioBuffer<float>>& waveBufferArray)
     {
         loading = true;
-
-        auto waveFile = File(filePath);
-
-        if (waveFile.isDirectory())
+        
+        // SINGLE WAVE IN ARRAY
+        if(waveBufferArray.size() == 1)
         {
-            auto waveFolders = waveFile.findChildFiles(2, true, "*.wav");
-
-            arraySize = waveFolders.size() - 1;
-
-            for (int i = 0; i < arraySize; i++)
-            {
-                auto waveIter = File(waveFolders[i].getFullPathName());
-                std::unique_ptr<AudioFormatReader> formatReader{ formatManager.createReaderFor(waveIter) };
-
-                formatReader->read(&tableArray[i]->getBuffer(), 0, tableSize, 0, true, false);
-            }
-        }
-        else
-        {
-            if (waveFile.hasFileExtension(".wav"))
-            {    
-                arraySize++; // accounting for added table
-                std::unique_ptr<AudioFormatReader> formatReader{ formatManager.createReaderFor(waveFile) };
-                formatReader->read(&tableArray[arraySize-1]->getBuffer(), 0, tableSize, 0, true, false);
-            }
+            addTableFromBuffer(*waveBufferArray[0]);
+            return;
         }
         
-
-        prepTables();
-    }
-
-    void loadTableFromBuffer(AudioBuffer<float>& waveBuffer)
-    {
-        arraySize++;
-        tableArray[arraySize - 1]->passBuffer(waveBuffer);
-    }
-
-    void setFrequency(float freq)
-    {
-        for (int i = 0; i < arraySize; i++)
+        // MULTIPLE WAVES IN ARRAY
+        numberOfWaveTables = waveBufferArray.size();
+        
+        // Put new buffers in array
+        for (int i = 0; i < numberOfWaveTables; i++)
         {
-            tableArray[i]->setFrequency(freq);
+            tableArray[i]->passBuffer(*waveBufferArray[i]);
         }
     }
 
     
-    float getNextSample()
+    
+    float getSampleAtIndexAndWavePosition(float index, float wavePos)
     {
-        float wavePos = waveVal.getNextValue();
-
         int lowerWaveIndex = (int)wavePos;
         int upperWaveIndex = lowerWaveIndex + 1;
 
-        if (lowerWaveIndex + 1 > arraySize - 1)
+        if (lowerWaveIndex + 1 > numberOfWaveTables - 1)
         {
             upperWaveIndex = 0;
         }
 
         float interp = wavePos - (float)lowerWaveIndex;
 
-        auto sample1 = tableArray[lowerWaveIndex]->getNextSample() * (1.f - interp);
+        auto sample1 = tableArray[lowerWaveIndex]->getSampleAtIndex(index) * (1.f - interp);
 
-        auto sample2 = tableArray[upperWaveIndex]->getNextSample() * (interp);
+        auto sample2 = tableArray[upperWaveIndex]->getSampleAtIndex(index) * (interp);
 
         auto sample = sample1 + sample2;
 
@@ -141,21 +107,12 @@ public:
     }
 
 
-    void setWave(float waveForm)
-    {
-        auto mappedWaveIndex = jmap(waveForm, 0.f, (float)arraySize - 1.f);
-        waveVal.setTargetValue(mappedWaveIndex);
-    }
 
     WaveTable* atIndex(int index)
     {
         return tableArray[index];
     }
 
-    int vectorSize()
-    {
-        return tableArray.size();
-    }
 
     bool isFinishedLoading()
     {
@@ -172,33 +129,26 @@ public:
         return tableArray[upperWaveIndex];
     }
 
-    float getWaveVal()
-    {
-        return waveVal.getCurrentValue();
-    }
 
     int getTableSize()
     {
         return tableSize;
     }
 
-    int getArraySize()
+    int getNumberOfWaveTables()
     {
-        return arraySize;
+        return numberOfWaveTables;
     }
+    
+    
 private:
-
-    OwnedArray<WaveTable> tableArray;
-    AudioFormatManager formatManager;
+    juce::OwnedArray<WaveTable> tableArray;
     CriticalSection lock;
 
     int tableSize = 0;
-    int arraySize = 0;
-
-    SmoothedValue<float> waveVal; // float interpVal{ 0.f };
-
-
-    Atomic<bool> loading { false };
+    int numberOfWaveTables = 0;
     
-    double mSampleRate = 48000;
+
+    juce::Atomic<bool> loading { false };
+    
 };

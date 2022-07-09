@@ -16,16 +16,20 @@
 
 
 //==============================================================================
+/*
+    This should only retrieve samples from the waveVector
+ */
+
 class GayOscillator
 {
 public:
 
     //==============================================================================
     // each oscillator
-    GayOscillator()
+    GayOscillator(WaveTableVector& vector)  : waveVector(vector)
     {
         gain = std::make_unique<GayParam>(GayParam::ParamType::gain);
-        pitch = std::make_unique<GayParam>(GayParam::ParamType::pitch);
+        freq = std::make_unique<GayParam>(GayParam::ParamType::pitch);
         wave = std::make_unique<GayParam>(GayParam::ParamType::wave);
 
     }
@@ -34,40 +38,44 @@ public:
 
     void prepare(double sampleRate)
     {
-        waveVector.prepare(sampleRate);
-        waveVector.setWave(0.5f);
 
+        oSampleRate = sampleRate;
         gain->prepare(sampleRate);
-        pitch->prepare(sampleRate);
+        freq->prepare(sampleRate);
         wave->prepare(sampleRate);
 
     }
 
-    void noteOn(float vel, float freq)
+    void noteOn(float vel, float newFreq)
     {
-        pitch->setValue(freq);
+        freq->setValue(newFreq);
     }
 
     void noteOff(){}
  
     //==============================================================================
+    // called by pitch bend
     void setFrequency(float newValue, bool force = false)
     {
-
-        pitch->setValue(newValue);
-        //waveVector.setFrequency(newValue);
+        freq->setValue(newValue);
     }
 
     void setLevel(float newValue){}
 
     void reset() noexcept{}
 
-    // iterates and returns
+    //*****************
+    // SAMPLE RETRIEVAL
     float getNextSample()
     {
-        waveVector.setWave(wave->getNextValue());
-        waveVector.setFrequency(pitch->getNextValue());
-        return waveVector.getNextSample() * gain->getNextValue();
+        // increments freq param while calculating new phase inc and next sample
+        float nextIndex     = _getNextSampleIndex(freq->getNextValue());
+        
+        float nextWavePos   = wave->getNextValue();
+        
+        float nextSample    = waveVector.getSampleAtIndexAndWavePosition(nextIndex, nextWavePos);
+        
+        return nextSample * gain->getNextValue();
     }
 
     //==============================================================================
@@ -77,25 +85,16 @@ public:
         return waveVector;
     }
 
-    void loadTables(StringRef filePath)
-    {
-        waveVector.loadTables(filePath);
-    }
 
-    void loadTableFromBuffer(AudioBuffer<float>& waveBuffer)
-    {
-        waveVector.loadTableFromBuffer(waveBuffer);
-    }
-
-    void update(float g, float gLFOScale, float gEnvScale, float w, float wLFOScale, float wEnvScale, float p, float pLFOScale, float pEnvScale)
+    void update(AudioProcessorValueTreeState& apvts)
     {
         gain->setValue(g);
         gain->setLFOScale(gLFOScale);
         gain->setEnvScale(gEnvScale);
 
-        pitch->setOffset(p);
-        pitch->setLFOScale(pLFOScale);
-        pitch->setEnvScale(pEnvScale);
+        freq->setOffset(p);
+        freq->setLFOScale(pLFOScale);
+        freq->setEnvScale(pEnvScale);
 
         wave->setValue(w);
         wave->setLFOScale(wLFOScale);
@@ -106,12 +105,13 @@ public:
     void assignLFO(WaveTable* mLFO, GayParam::ParamType pType)
     {
         using GayType = GayParam::ParamType;
+        
         if (pType == GayType::gain)
             gain->assignLFO(mLFO);
         if (pType == GayType::wave)
             wave->assignLFO(mLFO);
         if (pType == GayParam::pitch)
-            pitch->assignLFO(mLFO);
+            freq->assignLFO(mLFO);
     }
     
     void setNoLFO(GayParam::ParamType pType)
@@ -122,7 +122,7 @@ public:
         if (pType == GayType::wave)
             wave->setNoLFO();
         if (pType == GayParam::pitch)
-            pitch->setNoLFO();
+            freq->setNoLFO();
     }
 
     void assignEnvelope(GayADSR* mEnv, GayParam::ParamType pType)
@@ -133,7 +133,7 @@ public:
         if (pType == GayType::wave)
             wave->assignEnvelope(mEnv);
         if (pType == GayParam::pitch)
-            pitch->assignEnvelope(mEnv);
+            freq->assignEnvelope(mEnv);
         //gain->assignEnvelope(mEnv);
     }
     
@@ -145,13 +145,29 @@ public:
         if (pType == GayType::wave)
             wave->setNoEnv();
         if (pType == GayParam::pitch)
-            pitch->setNoEnv();
+            freq->setNoEnv();
     }
 private:
-    WaveTableVector waveVector;
+    WaveTableVector& waveVector;
     double glideTime = 0.1;
-    std::unique_ptr<GayParam> gain, wave, pitch;
+    double oSampleRate = -1;
+    float currentIndex = 0;
+    std::unique_ptr<GayParam> gain, wave, freq;
     
+    
+    float _getNextSampleIndex(float freq)
+    {
+        int tableSizeOverSampleRate = GPC_CONSTANTS::TABLE_SIZE / oSampleRate;
+        
+        float phaseIncrement = freq * tableSizeOverSampleRate;
+        
+        float nextSampleIndex = currentIndex;
+        
+        currentIndex += phaseIncrement;
+        
+        return nextSampleIndex;
+    }
+
     
 
 };

@@ -22,16 +22,26 @@ GayPolyCommunistAudioProcessor::GayPolyCommunistAudioProcessor()
                        ), apvts(*this, nullptr, "Parameters", createParameters())
 #endif
 {
+    synth = std::make_unique<GaySynth>();
+    loadDefaultWaves();
+    
     apvts.state.addListener(this);
 
-
-    waveDatabase.loadFiles();
+    //waveDatabase.loadFiles();
     update();
 }
 
 GayPolyCommunistAudioProcessor::~GayPolyCommunistAudioProcessor()
 {
     apvts.state.removeListener(this);
+}
+
+//***********************
+//
+void GayPolyCommunistAudioProcessor::loadDefaultWaves()
+{
+    auto bufferArray = waveLoader->getBufferArrayFromFilePath(GPC_CONSTANTS::defaultFolderPath);
+    
 }
 
 //==============================================================================
@@ -337,7 +347,7 @@ WaveTableVector& GayPolyCommunistAudioProcessor::getWaveVector(int oscNumber)
 {
 
     // only passing one wavetable because the visualizer only needs one
-    if (auto voice = dynamic_cast<GayVoice*>(synth.getVoice(0)))
+    if (auto voice = dynamic_cast<GayVoice*>(synth->getVoice(0)))
     {
         return voice->getTable(oscNumber);
     }
@@ -345,7 +355,7 @@ WaveTableVector& GayPolyCommunistAudioProcessor::getWaveVector(int oscNumber)
 
 GaySynth& GayPolyCommunistAudioProcessor::getSynth()
 {
-    return synth;
+    return *synth.get();
 }
 
 void GayPolyCommunistAudioProcessor::shouldProcess(bool isProcessing)
@@ -356,9 +366,9 @@ void GayPolyCommunistAudioProcessor::shouldProcess(bool isProcessing)
 bool GayPolyCommunistAudioProcessor::checkVoices()
 {
     bool allLoaded = false;
-    for (int voiceNum = 0; voiceNum < synth.getNumVoices(); voiceNum++)
+    for (int voiceNum = 0; voiceNum < synth->getNumVoices(); voiceNum++)
     {
-        if (auto voice = dynamic_cast<GayVoice*>(synth.getVoice(voiceNum)))
+        if (auto voice = dynamic_cast<GayVoice*>(synth->getVoice(voiceNum)))
         {
             allLoaded = voice->getTable(1).isFinishedLoading(); // checking that both Oscs are done loading
             allLoaded = voice->getTable(2).isFinishedLoading();
@@ -448,35 +458,35 @@ void GayPolyCommunistAudioProcessor::triggerMidi(bool isNoteOn)
 
 }
 
-WaveDatabase& GayPolyCommunistAudioProcessor::getWaveDatabase()
+WaveLoader& GayPolyCommunistAudioProcessor::getWaveLoader()
 {
-    return waveDatabase;
+    return waveLoader;
 }
 
-void GayPolyCommunistAudioProcessor::loadWaveTables(const StringArray& files, int oscNum)
+// drag/drop returns string array, not sure why
+void GayPolyCommunistAudioProcessor::loadWaveVectorFromFilePaths(const StringArray& filePaths, GaySynth::WaveTableVectors targetOscillator)
 {
+    // I think I have to iterate because each of these could be a directory
+    for (auto filePath : filePaths)
+    {
+        auto bufferArray = waveLoader.getBufferArrayFromFilePath(filePath);
+        
+        this->loadWaveVectorFromBufferArray(bufferArray, targetOscillator);
+    }
+}
+
+
+
+void GayPolyCommunistAudioProcessor::loadWaveVectorFromIndex(int index, GaySynth::WaveTableVectors targetOscillator)
+{
+    auto bufferArray = waveLoader.getBufferArrayFromIndex(index);
     
-    for (auto file : files)
-    {
-        for (int voiceNum = 0; voiceNum < synth.getNumVoices(); voiceNum++)
-        {
-            if (auto voice = dynamic_cast<GayVoice*>(synth.getVoice(voiceNum)))
-            {
-                voice->loadTables(file, oscNum);
-            }
-        }
-    }
+    this->loadWaveVectorFromBufferArray(bufferArray, targetOscillator);
 }
+       
 
-void GayPolyCommunistAudioProcessor::loadTableFromBuffer(AudioBuffer<float>& waveBuffer, int oscNum)
+void GayPolyCommunistAudioProcessor::loadWaveVectorFromBufferArray( juce::OwnedArray<juce::AudioBuffer<float>>& waveBufferArray,
+                                                                    GaySynth::WaveTableVectors targetOscillator)
 {
-    for (int voiceNum = 0; voiceNum < synth.getNumVoices(); voiceNum++)
-    {
-        if (auto voice = dynamic_cast<GayVoice*>(synth.getVoice(voiceNum)))
-        {
-            voice->loadTableFromBuffer(waveBuffer, oscNum);
-        }
-    }
+    synth->loadWaveVectorFromBufferArray(waveBufferArray, targetOscillator);
 }
-
-

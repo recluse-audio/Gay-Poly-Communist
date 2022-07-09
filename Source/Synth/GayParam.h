@@ -10,7 +10,7 @@
 
 #pragma once
 #include <JuceHeader.h>
-#include "../WaveTable/WaveTable.h"
+#include "../Synth/GayOscillator.h"
 #include "GayADSR.h"
 
 class GayParam
@@ -126,7 +126,7 @@ public:
     }
 
 private:
-    WaveTable* lfo;
+    GayOscillator* lfo;
     GayADSR* env;
     bool hasLFO = false;
     bool hasEnv = false;

@@ -10,7 +10,7 @@
 
 #include <JuceHeader.h>
 #include "../Synth/GaySynth.h"
-#include "WaveDatabase.h"
+#include "../SaveAndLoad/WaveLoader.h"
 
 //==============================================================================
 /**
@@ -23,6 +23,8 @@ public:
     GayPolyCommunistAudioProcessor();
     ~GayPolyCommunistAudioProcessor() override;
 
+    void loadDefaultWaves();
+    
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
     void releaseResources() override;
@@ -83,14 +85,16 @@ public:
     void toggleMidiTest(bool shouldToggle);
     void triggerMidi(bool isNoteOn);
 
-    WaveDatabase& getWaveDatabase();
+    WaveLoader& getWaveLoader();
 
-    void loadWaveTables(const StringArray& filePath, int oscNum);
-    void loadTableFromBuffer(AudioBuffer<float>& wave, int oscNum);
+    void loadWaveVectorFromFilePaths    (const juce::StringArray& filePath,                         GaySynth::WaveTableVectors targetOscillator);
+    void loadWaveVectorFromIndex        (int index,                                                 GaySynth::WaveTableVectors targetOscillator);
+    void loadWaveVectorFromBufferArray  (juce::OwnedArray<juce::AudioBuffer<float>>& bufferArray,   GaySynth::WaveTableVectors targetOscillator);
+
 
     float getLFODepth(int lfoNum);
 private:
-    GaySynth synth;
+    std::unique_ptr<GaySynth> synth;
 
     float lfoSource = 0.f;
     float envSource = 0.f;
@@ -105,7 +109,8 @@ private:
 
     float RMS = 0.f;
 
-    WaveDatabase waveDatabase;
+    WaveLoader waveLoader;
+
     String osc1WavePath = {""};
     String osc2WavePath = {""};
 

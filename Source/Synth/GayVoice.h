@@ -13,13 +13,12 @@
 #include "GaySynth.h"
 #include "GayOscillator.h"
 #include "GayADSR.h"
-#include "../Processor/PluginProcessor.h"
 
 
 class GayVoice : public MPESynthesiserVoice
 {
 public:
-    GayVoice()
+    GayVoice(GaySynth& pSynth) : parentSynth(pSynth)
     {
         initMods();
         filtFreq = std::make_unique<GayParam>(GayParam::ParamType::pitch); // rename this to be freq?
@@ -31,19 +30,16 @@ public:
     {
         env1.reset(); env2.reset(); env3.reset();
 
-        lfo1 = std::make_unique<WaveTable>(2048);
-        lfo1->createSineTable();
+        lfo1 = std::make_unique<GayOscillator>();
         lfoDepth1 = std::make_unique<GayParam>(GayParam::ParamType::gain);
         lfoRate1 = std::make_unique<GayParam>(GayParam::ParamType::pitch);
 
-        lfo2 = std::make_unique<WaveTable>(2048);
-        lfo2->createSineTable();
+        lfo2 = std::make_unique<GayOscillator>();
         lfoDepth2 = std::make_unique<GayParam>(GayParam::ParamType::gain);
         lfoRate2 = std::make_unique<GayParam>(GayParam::ParamType::pitch);
 
 
-        lfo3 = std::make_unique<WaveTable>(2048);
-        lfo3->createSineTable();
+        lfo3 = std::make_unique<GayOscillator>();
         lfoDepth3 = std::make_unique<GayParam>(GayParam::ParamType::gain);
         lfoRate3 = std::make_unique<GayParam>(GayParam::ParamType::pitch);
 
@@ -54,8 +50,8 @@ public:
     {
         prepareMods(spec.sampleRate);
 
-        osc1.prepare(spec.sampleRate);
-        osc2.prepare(spec.sampleRate);
+        osc1->prepare(spec.sampleRate);
+        osc2->prepare(spec.sampleRate);
 
         filtFreq->prepare(spec.sampleRate);
         filtRes->prepare(spec.sampleRate);
@@ -105,16 +101,16 @@ public:
         env2.noteOn();
         env3.noteOn();
 
-        osc1.noteOn(velocity, freqHz);
-        osc2.noteOn(velocity, freqHz);
+        osc1->noteOn(velocity, freqHz);
+        osc2->noteOn(velocity, freqHz);
     }
 
     //==============================================================================
     void notePitchbendChanged() override
     {
         auto freqHz = (float)getCurrentlyPlayingNote().getFrequencyInHertz();
-        osc1.setFrequency(freqHz);
-        osc2.setFrequency(freqHz);
+        osc1->setFrequency(freqHz);
+        osc2->setFrequency(freqHz);
     }
 
     //==============================================================================
@@ -143,7 +139,7 @@ public:
                 incrementEnvelopes();
                 incrementFilter();
 
-                auto sample = (osc1.getNextSample() + osc2.getNextSample()) * env1.getCurrentValue();
+                auto sample = (osc1->getNextSample() + osc2->getNextSample()) * env1.getCurrentValue();
                 
                 for (int channel = 0; channel < outputBuffer.getNumChannels(); channel++)
                 {
@@ -209,7 +205,7 @@ public:
     }
 
     void update(AudioProcessorValueTreeState& apvts)
-    {  
+    {
         //////////////////// VOICE ////////////////////
         auto filterMode = apvts.getRawParameterValue("Filter Mode")->load();
         updateFilterMode(filterMode);
@@ -398,30 +394,7 @@ public:
 
     }
 
-    // rethinking this oscNum business and the waveMenu overall
-    void loadTables(StringRef tableFilePath, int oscNum)
-    {
-        if (oscNum == 1)
-        {
-            osc1.loadTables(tableFilePath);
-        }
-        else
-        {
-            osc2.loadTables(tableFilePath);
-        }
-    }
 
-    void loadTableFromBuffer(AudioBuffer<float>& waveBuffer, int oscNum)
-    {
-        if (oscNum == 1)
-        {
-            osc1.loadTableFromBuffer(waveBuffer);
-        }
-        else
-        {
-            osc2.loadTableFromBuffer(waveBuffer);
-        }
-    }
 
    // void incrementFilter()
     // assigning modulators to the oscillators
@@ -575,11 +548,9 @@ private:
    dsp::LadderFilter<float> filter;
    bool isFiltering = true;
 
-   GayOscillator osc1, osc2;
-    
-   std::unique_ptr<WaveTable> lfo1, lfo2, lfo3;
+   std::unique_ptr<GayOscillator> osc1, osc2, lfo1, lfo2, lfo3;
    
-   GayADSR env1, env2, env3; // keeping in the voice (not synth) because this needs to change only when a note is triggered
+   GayADSR env1, env2, env3;
    GayADSR::Parameters envParam1, envParam2, envParam3;
 
    std::unique_ptr<GayParam> filtFreq, filtRes, filtDrive;
@@ -589,4 +560,6 @@ private:
    double glideTime = 0.01;
 
    float pitch = 0.f;
+    
+    GaySynth& parentSynth;
 };

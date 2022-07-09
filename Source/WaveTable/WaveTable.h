@@ -10,6 +10,7 @@
 
 #pragma once
 #include <JuceHeader.h>
+#include "../GPC_Constants.h"
 
 class WaveTable
 {
@@ -17,9 +18,9 @@ public:
     /*
         TO DO: run this as a []() function*
     */
-    WaveTable(int lengthInSamples = 2048) : waveBuffer(1, lengthInSamples)
+    WaveTable(juce::AudioBuffer<float>& wBuffer)
+    : waveBuffer(wBuffer)
     {
-        tableSize = lengthInSamples;
     }
 
 
@@ -31,68 +32,28 @@ public:
         mSampleRate = sampleRate;
     }
 
-    // used for defaults, lfo's... not involved in loading new tables
-    void createSineTable()
+
+    // Does calculate interp between samples here
+    float getSampleAtIndex(float index)
     {
-        waveBuffer.setSize(1, (int)tableSize);
-        waveBuffer.clear();
-
-        auto* buffWrite = waveBuffer.getWritePointer(0);
-
-        auto angleDelta = juce::MathConstants<double>::twoPi / (double)(tableSize - 1);
-        auto pi = juce::MathConstants<double>::pi;
-        double currentAngle = -pi;
-
-        for (unsigned int i = 0; i < tableSize; ++i)
-        {
-            float sample;
-            sample = std::sin(currentAngle);
-
-            buffWrite[i] += sample;
-            currentAngle += angleDelta;
-        }
-
-
-        buffWrite[tableSize] = buffWrite[0];
+        // needs to handle wrapping before getting here
+        jassert(index < GPC_CONSTANTS::TABLE_SIZE);
+        
+        int lowIndex  = (int)index;
+        int highIndex = lowIndex + 1;
+        
+        float spillOver         = index - lowIndex; // how far into next sample this index is
+        float inverseSpillOver  = 1.f   - spillOver;  //
+        
+        float sample1 = waveBuffer.getSample(0, lowIndex) * spillOver;
+        float sample2 = waveBuffer.getSample(0, highIndex) * inverseSpillOver;
+        
+        float sample = (sample1 + sample2) / 2.f;
+        
+        return waveBuffer.getSample(0, sample);
     }
 
-    float getNextSample()
-    {
-        auto index0 = (unsigned int)currentIndex;
-
-        auto frac = currentIndex - (float)index0;
-        auto* table = waveBuffer.getReadPointer(0);
-
-        auto value0 = table[index0];
-        auto value1 = table[index0 + 1];
-
-        currentSample = value0 + (frac * (value1 - value0));
-
-        currentSample *= gain;
-
-        currentIndex += tableDelta;
-
-        if (currentIndex > (float)waveBuffer.getNumSamples())
-        {
-            currentIndex = 0;
-        }
-
-        return currentSample;
-    }
-
-    // way of getting sample without increment
-    float getCurrentSample()
-    {
-        return currentSample;
-    }
-
-    void setFrequency(float freq)
-    {
-        auto tableSizeOverSampleRate = (float)waveBuffer.getNumSamples() / mSampleRate;
-       // auto tableScale = // scaling according to how 
-        tableDelta = freq * tableSizeOverSampleRate;
-    }
-
+    
     AudioBuffer<float>& getBuffer()
     {
         return waveBuffer;
@@ -108,7 +69,7 @@ public:
     }
 
     // passes new buffer to wavetable, handles conversion to size of 2048
-    void passBuffer(AudioBuffer<float>& newTable) // coming in at length of period
+    void passBuffer(juce::AudioBuffer<float>& newTable) // coming in at length of period
     {
 
         auto buffRead = newTable.getArrayOfReadPointers();
@@ -137,9 +98,9 @@ public:
     {
         gain = gainVal;
     }
+    
 private:
     juce::AudioBuffer<float> waveBuffer;
-    int tableSize = 2048;
     double mSampleRate = 48000;
     float tableDelta = 0.f, currentIndex = 0.f, currentSample = 0.f;
     float gain = 1.f;

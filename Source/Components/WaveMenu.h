@@ -12,7 +12,7 @@
 
 #include <JuceHeader.h>
 #include "../Processor/PluginProcessor.h"
-#include "../Processor/WaveDatabase.h"
+#include "../SaveAndLoad/WaveLoader.h"
 #include "../LookAndFeel/ArtieFeel.h"
 //==============================================================================
 /*
@@ -64,7 +64,7 @@ public:
                 }
                 if (selection > 0)
                 {
-                    auto path = audioProcessor.getWaveDatabase().getPathFromIndex(selection - 1);
+                    auto path = audioProcessor.getWaveLoader().getPathFromIndex(selection - 1);
                     audioProcessor.loadWaveTables(path, oscNum);
                 }
             });
@@ -82,7 +82,7 @@ public:
 
         int itemIndex = 1; // used to properly index waves without resetting in the wave loop
 
-        OwnedArray<WaveDatabase::WaveFolder>& waveFolders = audioProcessor.getWaveDatabase().getWaveFolders();
+        auto waveFolders = audioProcessor.getWaveLoader().getWaveFolders();
 
         for (size_t i = 0; i < waveFolders.size(); i++)
         {
@@ -115,7 +115,7 @@ public:
 private:
     ArtieFeel artieFeel;
     int oscNum = 1;
-    std::unique_ptr<WaveDatabase> database;
+    std::unique_ptr<WaveLoader> database;
     std::unique_ptr<TextButton> button;
     std::unique_ptr<PopupMenu> menu;
     GayPolyCommunistAudioProcessor& audioProcessor;

@@ -54,28 +54,28 @@ public:
 
         int itemIndex = 1; // used to properly index artist romples without resetting in the artist loop
 
-        for (int artistIndex = 0; artistIndex < database.artists.size(); artistIndex++) // Artists - just a section header
-        {
-            auto artist = database.artists[artistIndex];
-            menu.addSectionHeader(artist->getArtistName());
-
-            for (int categoryIndex = 0; categoryIndex < artist->getNumCategories(); categoryIndex++)
-            {
-
-                auto categoryMenu = new PopupMenu();
-                auto category = artist->getCategory(categoryIndex);
-                auto romples = category.getRompleArray();
-
-                for (int rompleIndex = 0; rompleIndex < romples.size(); rompleIndex++)
-                {
-                    categoryMenu->addItem(itemIndex, romples[rompleIndex]); // item index keeps track of the different categories
-                    itemIndex++;
-                }
-
-                menu.addSubMenu(category.getName(), *categoryMenu);
-            }
-
-        }
+//        for (int artistIndex = 0; artistIndex < database.artists.size(); artistIndex++) // Artists - just a section header
+//        {
+//            auto artist = database.artists[artistIndex];
+//            menu.addSectionHeader(artist->getArtistName());
+//
+//            for (int categoryIndex = 0; categoryIndex < artist->getNumCategories(); categoryIndex++)
+//            {
+//
+//                auto categoryMenu = new PopupMenu();
+//                auto category = artist->getCategory(categoryIndex);
+//                auto romples = category.getRompleArray();
+//
+//                for (int rompleIndex = 0; rompleIndex < romples.size(); rompleIndex++)
+//                {
+//                    categoryMenu->addItem(itemIndex, romples[rompleIndex]); // item index keeps track of the different categories
+//                    itemIndex++;
+//                }
+//
+//                menu.addSubMenu(category.getName(), *categoryMenu);
+//            }
+//
+//        }
     }
     
     void paint (juce::Graphics& g) override
