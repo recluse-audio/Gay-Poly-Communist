@@ -143,6 +143,36 @@ void WaveLoader::populateWaveFolders(juce::StringRef waveFolderPath)
     }
 }
 
+juce::AudioBuffer<float> WaveLoader::getValidBuffer(juce::AudioBuffer<float> bufferToConform)
+{
+    // Stop and return if already exactly correct size
+    if(bufferToConform.getNumSamples() == GPC_CONSTANTS::TABLE_SIZE)
+        return bufferToConform;
+    
+    auto conformedBuffer = juce::AudioBuffer<float>(1, GPC_CONSTANTS::TABLE_SIZE);
+    
+    auto buffRead  = bufferToConform.getArrayOfReadPointers();
+    auto buffWrite = conformedBuffer.getArrayOfWritePointers();
+    
+    // Scale how much we increment the read index then interpolate before writing to conformed buffer
+    float sizeRatio = (float)bufferToConform.getNumSamples() / (float)GPC_CONSTANTS::TABLE_SIZE;
+
+    for (int i = 0; i < GPC_CONSTANTS::TABLE_SIZE; i++)
+    {
+        // downsampling / interpolation algorithm to make new table into 2048
+        auto readIndex = i * sizeRatio;
+        float frac = readIndex - (int)readIndex;
+
+        float readSample0 = buffRead[0][(int)readIndex] * (1 - frac);
+        float readSample1 = buffRead[0][(int)readIndex + 1] * frac;
+        float readSample = readSample0 + readSample1;
+          
+        buffWrite[0][i] = readSample;
+
+    }
+    
+    return conformedBuffer;
+}
 
 
 juce::OwnedArray<WaveFolder>& WaveLoader::getWaveFolders()

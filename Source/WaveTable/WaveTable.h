@@ -16,7 +16,10 @@ class WaveTable
 {
 public:
     /*
-        TO DO: run this as a []() function*
+        Basically a juce::AudioBuffer<float> that handles down/up-sampling to make everything the table size constant
+        Also returns sample value at float index, interpolating linearly between sequential samples
+     
+        TODO: Templay this?    
     */
     WaveTable(juce::AudioBuffer<float>& wBuffer)
     : waveBuffer(wBuffer)
@@ -59,14 +62,6 @@ public:
         return waveBuffer;
     }
 
-    // specifically for visualizer (exists in case user dropped in a wavetable of a different size)
-    AudioBuffer<float>& getMappedBuffer()
-    {
-        if (waveBuffer.getNumSamples() != tableSize)
-        {
-
-        }
-    }
 
     // passes new buffer to wavetable, handles conversion to size of 2048
     void passBuffer(juce::AudioBuffer<float>& newTable) // coming in at length of period
@@ -74,9 +69,9 @@ public:
 
         auto buffRead = newTable.getArrayOfReadPointers();
         auto buffWrite = waveBuffer.getArrayOfWritePointers();
-        float sizeRatio = (float)newTable.getNumSamples() / (float)tableSize;
+        float sizeRatio = (float)newTable.getNumSamples() / (float)GPC_CONSTANTS::TABLE_SIZE;
 
-        for (int i = 0; i < tableSize; i++)
+        for (int i = 0; i < GPC_CONSTANTS::TABLE_SIZE; i++)
         {
             auto waveIndex = i; // for our nice 2048 sample sized wavetable
                 

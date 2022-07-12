@@ -26,16 +26,12 @@
 class WaveTableVector
 {
 public:
-    WaveTableVector(int maxNumTables, juce::OwnedArray<juce::AudioBuffer<float>>& waveBufferArray)
-    : tableSize(GPC_CONSTANTS::TABLE_SIZE)
+    WaveTableVector(juce::OwnedArray<juce::AudioBuffer<float>>& waveBufferArray)
     {
 
-        // intitialize 100, then just change their waveform 
-        // we keep track of arraySize so that we can map our 0-1 wave value to map to an appropriate value
-        // Wasn't working to clear the array each time
-        for (int i = 0; i < maxNumTables; i++)
+        for (auto waveBuffer : waveBufferArray)
         {
-            tableArray.add(new WaveTable(tableSize));
+            tableArray.add(new WaveTable(waveBuffer));
         }
     }
 
@@ -47,8 +43,7 @@ public:
 
     void addTableFromBuffer(juce::AudioBuffer<float>& waveBuffer)
     {
-        numberOfWaveTables++;
-        tableArray[numberOfWaveTables - 1]->passBuffer(waveBuffer);
+        tableArray.add(new WaveTable(waveBuffer));
     }
     
     

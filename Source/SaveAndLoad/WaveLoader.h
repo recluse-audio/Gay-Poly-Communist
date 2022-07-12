@@ -40,7 +40,9 @@ public:
     // Don't want to hold on to these, pass them along
     juce::OwnedArray<juce::AudioBuffer<float>> getBufferArrayFromFilePath(juce::StringRef filePath);
     
-
+    // Makes sure that buffer is GPC_CONSTANTS::TABLE_SIZE in length.
+    // TODO:  Normalize amplitudes?  Compress them?  Give Option?
+    juce::AudioBuffer<float> WaveLoader::getValidBuffer(juce::AudioBuffer<float> bufferToConform);
 
     // Used to populate menu and get data from waves (name artist etc)
     OwnedArray<WaveFolder>& getWaveFolders();
