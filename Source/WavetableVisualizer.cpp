@@ -56,13 +56,13 @@ void WavetableVisualizer::paint (juce::Graphics& g)
 
         }
         auto waveVal = waveParam->getValue();
-        auto mappedVal = jmap(waveVal, 0.f, (float)waveVector.getArraySize() - 1);
+        auto mappedVal = jmap(waveVal, 0.f, (float)waveVector.getNumberOfWaveTables() - 1);
         // i chose to calc this here as opposed to just doing it in the vector because I couldn't smooth the waveIndices (not sure if this is smart)_
         // They are potentially changing at the sample level so I thought it best to pass the smoothed wavePos value only
         int lowerWaveIndex = (int)mappedVal;
         int upperWaveIndex = lowerWaveIndex + 1;
 
-        if (upperWaveIndex > waveVector.getArraySize())
+        if (upperWaveIndex > waveVector.getNumberOfWaveTables())
         {
             upperWaveIndex = 0;
         }

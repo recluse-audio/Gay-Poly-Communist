@@ -10,17 +10,19 @@
 
 #pragma once
 #include <JuceHeader.h>
-#include "../Synth/GayOscillator.h"
+#include "GayOscillator.h"
 #include "GayADSR.h"
+
+class GayOscillator;
 
 class GayParam
 {
 public:
     enum ParamType
     {
-        gain,
-        pitch,
-        wave,
+        Gain,
+        Frequency,
+        WavePosition,
     };
 
     GayParam(ParamType t) : type(t) {}
@@ -41,7 +43,7 @@ public:
         offset = off; // currently just for pitch
     }
     
-    void assignLFO(WaveTable* mLFO)
+    void assignLFO(GayOscillator* mLFO)
     {
         lfo = mLFO;
         hasLFO = true;
@@ -76,7 +78,7 @@ public:
     {
         val = value.getNextValue();
 
-        if (type == gain) // limit to 0 - 1
+        if (type == Gain) // limit to 0 - 1
         {
             if (hasLFO)
             {
@@ -89,7 +91,7 @@ public:
             }
             return val;
         }
-        if (type == pitch)
+        if (type == Frequency)
         {
             val += (offset * val); // scale -1., 1 
             if (hasLFO)
@@ -102,7 +104,7 @@ public:
             }
             return val;
         }
-        if (type == wave)
+        if (type == WavePosition)
         {
             if (hasLFO)
             {

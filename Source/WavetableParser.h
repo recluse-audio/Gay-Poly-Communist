@@ -10,7 +10,7 @@
 
 #pragma once
 #include "Yin.h"
-#include "../Processor/PluginProcessor.h"
+#include "PluginProcessor.h"
 
 class WavetableParser
 {
@@ -47,7 +47,7 @@ public:
         {
             int startPos = waveChunk * i;
             fillSingleCycle(startPos);
-            audioProcessor.loadTableFromBuffer(singleCycle, oscNum);
+           // audioProcessor.loadTableFromBuffer(singleCycle, oscNum);
         }
         
     }

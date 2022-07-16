@@ -12,7 +12,7 @@
 
 #include <JuceHeader.h>
 #include "EnvelopeControlPoint.h"
-#include "../../Processor/PluginProcessor.h"
+#include "PluginProcessor.h"
 
 
 

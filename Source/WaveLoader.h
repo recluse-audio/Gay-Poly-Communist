@@ -35,17 +35,17 @@ public:
     // fills our wavefolders with the important info
     void populateWaveFolders(juce::StringRef waveFolderPath);
     
-    juce::OwnedArray<juce::AudioBuffer<float>> getBufferArrayFromIndex(int index);
+    juce::Array<juce::AudioBuffer<float>> getBufferArrayFromIndex(int index);
     
     // Don't want to hold on to these, pass them along
-    juce::OwnedArray<juce::AudioBuffer<float>> getBufferArrayFromFilePath(juce::StringRef filePath);
+    juce::Array<juce::AudioBuffer<float>> getBufferArrayFromFilePath(juce::StringRef filePath);
     
     // Makes sure that buffer is GPC_CONSTANTS::TABLE_SIZE in length.
     // TODO:  Normalize amplitudes?  Compress them?  Give Option?
-    juce::AudioBuffer<float> WaveLoader::getValidBuffer(juce::AudioBuffer<float> bufferToConform);
+    juce::AudioBuffer<float> getValidBuffer(juce::AudioBuffer<float> bufferToConform);
 
     // Used to populate menu and get data from waves (name artist etc)
-    OwnedArray<WaveFolder>& getWaveFolders();
+    juce::OwnedArray<WaveFolder>& getWaveFolders();
     
     
 
@@ -54,8 +54,8 @@ public:
     
     
 private:
-    OwnedArray<WaveFolder> waveFolders;
-    StringArray allWavePaths; // see 'getPathFromIndex'
+    juce::OwnedArray<WaveFolder> waveFolders;
+    juce::StringArray allWavePaths; // see 'getPathFromIndex'
     juce::String lastSelectedFilePath; // path to containing folder of current wavetable
 
     AudioFormatManager formatManager;
@@ -64,7 +64,7 @@ private:
     
     juce::StringRef _getPathFromIndex(int index);
 
-    juce::OwnedArray<juce::AudioBuffer<float>> _getWaveBuffersFromFilePath(juce::StringRef filePath);
+    juce::Array<juce::AudioBuffer<float>> _getWaveBuffersFromFilePath(juce::StringRef filePath);
     
 
 };

@@ -3,93 +3,91 @@
 <JUCERPROJECT id="XbBxHL" name="Gay Poly Communist" projectType="audioplug"
               useAppConfig="0" addUsingNamespaceToJuceHeader="1" displaySplashScreen="1"
               jucerFormatVersion="1" companyName="recluse-audio" pluginCharacteristicsValue="pluginIsSynth,pluginProducesMidiOut,pluginWantsMidiIn"
-              pluginCode="GPC" pluginManufacturerCode="Recl" pluginAUMainType="'aumu'">
+              pluginCode="GPC0" pluginManufacturerCode="Recl" pluginAUMainType="'aumu'">
   <MAINGROUP id="IbflzF" name="Gay Poly Communist">
     <GROUP id="{CFF36181-D2F0-986C-BA47-E1BB90F956DE}" name="Source">
       <GROUP id="{2B27576B-F11D-BC98-4592-36885FB4AE4E}" name="Save/Load">
-        <FILE id="p96ljD" name="PresetLoader.cpp" compile="1" resource="0"
-              file="Source/SaveAndLoad/PresetLoader.cpp"/>
-        <FILE id="F1FQW6" name="PresetLoader.h" compile="0" resource="0" file="Source/SaveAndLoad/PresetLoader.h"/>
-        <FILE id="ccWrVe" name="PresetSaver.cpp" compile="1" resource="0" file="Source/SaveAndLoad/PresetSaver.cpp"/>
-        <FILE id="Zy5OJc" name="PresetSaver.h" compile="0" resource="0" file="Source/SaveAndLoad/PresetSaver.h"/>
-        <FILE id="utMKmL" name="WaveLoader.cpp" compile="1" resource="0" file="Source/SaveAndLoad/WaveLoader.cpp"/>
-        <FILE id="EXesmj" name="WaveLoader.h" compile="0" resource="0" file="Source/SaveAndLoad/WaveLoader.h"/>
-        <FILE id="WJypZQ" name="WaveSaver.cpp" compile="1" resource="0" file="Source/SaveAndLoad/WaveSaver.cpp"/>
-        <FILE id="glX2jR" name="WaveSaver.h" compile="0" resource="0" file="Source/SaveAndLoad/WaveSaver.h"/>
+        <FILE id="VpuFEQ" name="PresetLoader.cpp" compile="1" resource="0"
+              file="Source/PresetLoader.cpp"/>
+        <FILE id="SUTrmX" name="PresetLoader.h" compile="0" resource="0" file="Source/PresetLoader.h"/>
+        <FILE id="lI47il" name="PresetSaver.cpp" compile="1" resource="0" file="Source/PresetSaver.cpp"/>
+        <FILE id="TlH4l4" name="PresetSaver.h" compile="0" resource="0" file="Source/PresetSaver.h"/>
+        <FILE id="tCnZAj" name="WaveLoader.cpp" compile="1" resource="0" file="Source/WaveLoader.cpp"/>
+        <FILE id="n1CFlX" name="WaveLoader.h" compile="0" resource="0" file="Source/WaveLoader.h"/>
+        <FILE id="Lr9Hug" name="WaveSaver.cpp" compile="1" resource="0" file="Source/WaveSaver.cpp"/>
+        <FILE id="MIRFsr" name="WaveSaver.h" compile="0" resource="0" file="Source/WaveSaver.h"/>
       </GROUP>
       <GROUP id="{FA8739E1-5DE2-C5AF-A1E7-B294DBA8F455}" name="BinaryData">
         <FILE id="PeW5ms" name="LOGO_SVG.svg" compile="0" resource="1" file="LOGO_SVG.svg"/>
       </GROUP>
       <GROUP id="{16009940-43FB-6390-6EF6-FE52B8E9CDA3}" name="Components">
         <GROUP id="{8919CB94-A40C-0B30-B78D-B343731BF3D4}" name="MainMenu">
-          <FILE id="ckZjs6" name="MainMenuButton.h" compile="0" resource="0"
-                file="Source/Components/MainMenu/MainMenuButton.h"/>
-          <FILE id="xBU0Q8" name="MainMenuComponent.h" compile="0" resource="0"
-                file="Source/Components/MainMenu/MainMenuComponent.h"/>
+          <FILE id="PAscYU" name="MainMenuButton.h" compile="0" resource="0"
+                file="Source/MainMenuButton.h"/>
+          <FILE id="WoDLhA" name="MainMenuComponent.h" compile="0" resource="0"
+                file="Source/MainMenuComponent.h"/>
           <GROUP id="{F56AFCB1-087E-DCB3-D563-15F923FBC36D}" name="MainMenuSelections">
-            <FILE id="I3DA6w" name="ParameterDictionaryComponent.h" compile="0"
-                  resource="0" file="Source/Components/MainMenu/MainMenuSelections/ParameterDictionaryComponent.h"/>
-            <FILE id="IZmTiF" name="PresetMenuComponent.h" compile="0" resource="0"
-                  file="Source/Components/MainMenu/MainMenuSelections/PresetMenuComponent.h"/>
-            <FILE id="OzlbRp" name="TutorialComponent.h" compile="0" resource="0"
-                  file="Source/Components/MainMenu/MainMenuSelections/TutorialComponent.h"/>
+            <FILE id="hnYOVx" name="PresetMenuComponent.h" compile="0" resource="0"
+                  file="Source/PresetMenuComponent.h"/>
           </GROUP>
         </GROUP>
-        <FILE id="hZdv4U" name="FilterComponent.h" compile="0" resource="0"
-              file="Source/Components/FilterComponent.h"/>
-        <FILE id="iyl9Wo" name="WaveMenu.h" compile="0" resource="0" file="Source/Components/WaveMenu.h"/>
-        <FILE id="ufHVah" name="OscillatorComponent.h" compile="0" resource="0"
-              file="Source/Components/OscillatorComponent.h"/>
-        <FILE id="FtcoWL" name="LFOSlider.h" compile="0" resource="0" file="Source/Components/LFOSlider.h"/>
-        <FILE id="BMhhwS" name="OscSlider.h" compile="0" resource="0" file="Source/Components/OscSlider.h"/>
-        <FILE id="HTX0mI" name="GPCSlider.h" compile="0" resource="0" file="Source/Components/GPCSlider.h"/>
-        <FILE id="E8ts8J" name="EnvSliders.h" compile="0" resource="0" file="Source/Components/EnvSliders.h"/>
-        <FILE id="ZOQZRp" name="WavetableVisualizer.cpp" compile="1" resource="0"
-              file="Source/Components/WavetableVisualizer.cpp"/>
-        <FILE id="bWHhOF" name="WavetableVisualizer.h" compile="0" resource="0"
-              file="Source/Components/WavetableVisualizer.h"/>
-        <FILE id="CxZWi9" name="ModSliders.h" compile="0" resource="0" file="Source/Components/ModSliders.h"/>
+        <FILE id="BSvh0A" name="EnvSliders.h" compile="0" resource="0" file="Source/EnvSliders.h"/>
+        <FILE id="KUbH48" name="FilterComponent.h" compile="0" resource="0"
+              file="Source/FilterComponent.h"/>
+        <FILE id="jTbt9a" name="GPCSlider.h" compile="0" resource="0" file="Source/GPCSlider.h"/>
+        <FILE id="Xn1nG3" name="LFOSlider.h" compile="0" resource="0" file="Source/LFOSlider.h"/>
+        <FILE id="MPHTFu" name="ModSliders.h" compile="0" resource="0" file="Source/ModSliders.h"/>
+        <FILE id="hRwpsK" name="OscillatorComponent.h" compile="0" resource="0"
+              file="Source/OscillatorComponent.h"/>
+        <FILE id="ddCOqI" name="OscSlider.h" compile="0" resource="0" file="Source/OscSlider.h"/>
+        <FILE id="E0dyZq" name="WaveMenu.h" compile="0" resource="0" file="Source/WaveMenu.h"/>
+        <FILE id="l8sotw" name="WavetableVisualizer.cpp" compile="1" resource="0"
+              file="Source/WavetableVisualizer.cpp"/>
+        <FILE id="HG174y" name="WavetableVisualizer.h" compile="0" resource="0"
+              file="Source/WavetableVisualizer.h"/>
         <GROUP id="{4A67719B-FB2A-ABE4-3370-71829E76523F}" name="EnvelopeComponent">
-          <FILE id="RAg5VZ" name="EnvelopeVisualizer.cpp" compile="1" resource="0"
-                file="Source/Components/EnvelopeComponent/EnvelopeVisualizer.cpp"/>
-          <FILE id="tx3w9n" name="EnvelopeVisualizer.h" compile="0" resource="0"
-                file="Source/Components/EnvelopeComponent/EnvelopeVisualizer.h"/>
-          <FILE id="kOvs9q" name="EnvelopeControlPoint.h" compile="0" resource="0"
-                file="Source/Components/EnvelopeComponent/EnvelopeControlPoint.h"/>
+          <FILE id="eVhBik" name="EnvelopeControlPoint.h" compile="0" resource="0"
+                file="Source/EnvelopeControlPoint.h"/>
+          <FILE id="EqQALH" name="EnvelopeVisualizer.cpp" compile="1" resource="0"
+                file="Source/EnvelopeVisualizer.cpp"/>
+          <FILE id="nSHQOV" name="EnvelopeVisualizer.h" compile="0" resource="0"
+                file="Source/EnvelopeVisualizer.h"/>
         </GROUP>
       </GROUP>
       <GROUP id="{18CDEF89-1D66-4237-D3C5-534B8B3C56D2}" name="LookNFeel">
-        <FILE id="ecUmQQ" name="ArtieFeel.cpp" compile="1" resource="0" file="Source/LookAndFeel/ArtieFeel.cpp"/>
-        <FILE id="lh2FoL" name="ArtieFeel.h" compile="0" resource="0" file="Source/LookAndFeel/ArtieFeel.h"/>
-        <FILE id="TFRNte" name="NameFeel.h" compile="0" resource="0" file="Source/LookAndFeel/NameFeel.h"/>
+        <FILE id="vFYF8V" name="ArtieFeel.cpp" compile="1" resource="0" file="Source/ArtieFeel.cpp"/>
+        <FILE id="OzQdVZ" name="ArtieFeel.h" compile="0" resource="0" file="Source/ArtieFeel.h"/>
+        <FILE id="HUzQ2w" name="NameFeel.h" compile="0" resource="0" file="Source/NameFeel.h"/>
       </GROUP>
       <GROUP id="{34557F00-31F2-D788-E1EA-ECD8A1A73BA6}" name="Synth">
-        <FILE id="ggAaeZ" name="GayParam.h" compile="0" resource="0" file="Source/Synth/GayParam.h"/>
-        <FILE id="MxJbjC" name="GayADSR.h" compile="0" resource="0" file="Source/Synth/GayADSR.h"/>
-        <FILE id="rWyedU" name="GaySynth.h" compile="0" resource="0" file="Source/Synth/GaySynth.h"/>
-        <FILE id="rKMTPT" name="GayVoice.h" compile="0" resource="0" file="Source/Synth/GayVoice.h"/>
-        <FILE id="LsbKj3" name="GayOscillator.h" compile="0" resource="0" file="Source/Synth/GayOscillator.h"/>
+        <FILE id="u2bKxP" name="GayOscillator.cpp" compile="1" resource="0"
+              file="Source/GayOscillator.cpp"/>
+        <FILE id="gcc4Lw" name="GayOscillator.h" compile="0" resource="0" file="Source/GayOscillator.h"/>
+        <FILE id="RCAldx" name="GayParam.h" compile="0" resource="0" file="Source/GayParam.h"/>
+        <FILE id="tNtuxJ" name="GaySynth.h" compile="0" resource="0" file="Source/GaySynth.h"/>
+        <FILE id="nUR16w" name="GayVoice.cpp" compile="1" resource="0" file="Source/GayVoice.cpp"/>
+        <FILE id="t5n8iz" name="GayVoice.h" compile="0" resource="0" file="Source/GayVoice.h"/>
       </GROUP>
       <GROUP id="{A51FEACE-1059-FAF5-25C8-E299B238C78B}" name="WaveTable">
-        <FILE id="Qq1nZY" name="WavetableParser.h" compile="0" resource="0"
-              file="Source/WaveTable/WavetableParser.h"/>
-        <FILE id="tdgYwx" name="Yin.h" compile="0" resource="0" file="Source/WaveTable/Yin.h"/>
-        <FILE id="v9Pt73" name="WaveTableLoader.h" compile="0" resource="0"
-              file="Source/WaveTable/WaveTableLoader.h"/>
-        <FILE id="rGoCKo" name="WaveTableVector.h" compile="0" resource="0"
-              file="Source/WaveTable/WaveTableVector.h"/>
-        <FILE id="FGf9Io" name="WaveTable.h" compile="0" resource="0" file="Source/WaveTable/WaveTable.h"/>
+        <FILE id="zntbLv" name="WaveTable.h" compile="0" resource="0" file="Source/WaveTable.h"/>
+        <FILE id="ooYvV9" name="WaveTableLoader.h" compile="0" resource="0"
+              file="Source/WaveTableLoader.h"/>
+        <FILE id="IzJQNw" name="WavetableParser.h" compile="0" resource="0"
+              file="Source/WavetableParser.h"/>
+        <FILE id="HoZDqe" name="WaveTableVector.h" compile="0" resource="0"
+              file="Source/WaveTableVector.h"/>
+        <FILE id="f6qc2Q" name="Yin.h" compile="0" resource="0" file="Source/Yin.h"/>
       </GROUP>
       <GROUP id="{FDF19D77-032E-F4C2-37F2-E9B06447B059}" name="Processor">
-        <FILE id="VJDWt3" name="PluginProcessor.cpp" compile="1" resource="0"
-              file="Source/Processor/PluginProcessor.cpp"/>
-        <FILE id="KrUeXk" name="PluginProcessor.h" compile="0" resource="0"
-              file="Source/Processor/PluginProcessor.h"/>
+        <FILE id="APmZqV" name="PluginProcessor.cpp" compile="1" resource="0"
+              file="Source/PluginProcessor.cpp"/>
+        <FILE id="KD8BbX" name="PluginProcessor.h" compile="0" resource="0"
+              file="Source/PluginProcessor.h"/>
       </GROUP>
       <GROUP id="{E93B1B7E-4121-0E68-A696-EAFA1C9C2FBD}" name="Editor">
-        <FILE id="DdDhSa" name="PluginEditor.cpp" compile="1" resource="0"
-              file="Source/Editor/PluginEditor.cpp"/>
-        <FILE id="gHZSDd" name="PluginEditor.h" compile="0" resource="0" file="Source/Editor/PluginEditor.h"/>
+        <FILE id="fW0jMc" name="PluginEditor.cpp" compile="1" resource="0"
+              file="Source/PluginEditor.cpp"/>
+        <FILE id="IgyYlW" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
     </GROUP>
     <FILE id="sQTsLR" name="GPC_Constants.h" compile="0" resource="0" file="Source/GPC_Constants.h"/>

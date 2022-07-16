@@ -10,7 +10,7 @@
 
 #pragma once
 #include <JuceHeader.h>
-#include "../GPC_Constants.h"
+#include "GPC_Constants.h"
 
 class WaveTable
 {
@@ -19,9 +19,9 @@ public:
         Basically a juce::AudioBuffer<float> that handles down/up-sampling to make everything the table size constant
         Also returns sample value at float index, interpolating linearly between sequential samples
      
-        TODO: Templay this?    
+        TODO: Template this?
     */
-    WaveTable(juce::AudioBuffer<float>& wBuffer)
+    WaveTable(juce::AudioBuffer<float> wBuffer)
     : waveBuffer(wBuffer)
     {
     }
@@ -39,7 +39,7 @@ public:
     // Does calculate interp between samples here
     float getSampleAtIndex(float index)
     {
-        // needs to handle wrapping before getting here
+        // needs to handle wrapping before gett*ing here
         jassert(index < GPC_CONSTANTS::TABLE_SIZE);
         
         int lowIndex  = (int)index;
@@ -64,7 +64,7 @@ public:
 
 
     // passes new buffer to wavetable, handles conversion to size of 2048
-    void passBuffer(juce::AudioBuffer<float>& newTable) // coming in at length of period
+    void passBuffer(juce::AudioBuffer<float> newTable) // coming in at length of period
     {
 
         auto buffRead = newTable.getArrayOfReadPointers();

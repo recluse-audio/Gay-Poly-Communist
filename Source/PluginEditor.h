@@ -9,22 +9,22 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "../Processor/PluginProcessor.h"
-#include "../LookAndFeel/ArtieFeel.h"
-#include "../LookAndFeel/NameFeel.h"
+#include "PluginProcessor.h"
+#include "ArtieFeel.h"
+#include "NameFeel.h"
 
-#include "../Components/WavetableVisualizer.h"
-#include "../Components/LFOSlider.h"
-#include "../Components/EnvSliders.h"
-#include"../Components/GPCSlider.h"
-#include "../Components/WaveMenu.h"
-#include "../Components/FilterComponent.h"
+#include "WavetableVisualizer.h"
+#include "LFOSlider.h"
+#include "EnvSliders.h"
+#include "GPCSlider.h"
+#include "WaveMenu.h"
+#include "FilterComponent.h"
 
-#include"../Components/OscSlider.h"
-#include "../Components/OscillatorComponent.h"
-#include "../Components/EnvelopeComponent/EnvelopeVisualizer.h"
+#include "OscSlider.h"
+#include "OscillatorComponent.h"
+#include "EnvelopeVisualizer.h"
 
-#include "../Components/MainMenu/MainMenuButton.h"
+#include "MainMenuButton.h"
 
 
 

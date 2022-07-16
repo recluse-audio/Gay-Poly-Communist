@@ -11,7 +11,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "WaveTable.h"
-#include "../GPC_Constants.h"
+#include "GPC_Constants.h"
 
 
 /*
@@ -26,7 +26,7 @@
 class WaveTableVector
 {
 public:
-    WaveTableVector(juce::OwnedArray<juce::AudioBuffer<float>>& waveBufferArray)
+    WaveTableVector(juce::Array<juce::AudioBuffer<float>> waveBufferArray)
     {
 
         for (auto waveBuffer : waveBufferArray)
@@ -41,21 +41,21 @@ public:
     }
 
 
-    void addTableFromBuffer(juce::AudioBuffer<float>& waveBuffer)
+    void addTableFromBuffer(juce::AudioBuffer<float> waveBuffer)
     {
         tableArray.add(new WaveTable(waveBuffer));
     }
     
     
     // clears and reloads buffer with new vector (array) of wavetables
-    void loadVectorFromBufferArray(juce::OwnedArray<juce::AudioBuffer<float>>& waveBufferArray)
+    void loadVectorFromBufferArray(juce::Array<juce::AudioBuffer<float>> waveBufferArray)
     {
         loading = true;
         
         // SINGLE WAVE IN ARRAY
         if(waveBufferArray.size() == 1)
         {
-            addTableFromBuffer(*waveBufferArray[0]);
+            addTableFromBuffer(waveBufferArray[0]);
             return;
         }
         
@@ -65,7 +65,7 @@ public:
         // Put new buffers in array
         for (int i = 0; i < numberOfWaveTables; i++)
         {
-            tableArray[i]->passBuffer(*waveBufferArray[i]);
+            tableArray[i]->passBuffer(waveBufferArray[i]);
         }
     }
 
@@ -92,13 +92,6 @@ public:
         return sample;
 
         
-    }
-
-    WaveTable& getInterpolatedTable()
-    {
-        // TO DO: This is not satisfactory
-        auto table = *tableArray[0];
-        return table;
     }
 
 

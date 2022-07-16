@@ -22,8 +22,8 @@ GayPolyCommunistAudioProcessor::GayPolyCommunistAudioProcessor()
                        ), apvts(*this, nullptr, "Parameters", createParameters())
 #endif
 {
-    synth = std::make_unique<GaySynth>();
-    loadDefaultWaves();
+    // Construct synth with default buffer array to 
+    synth = std::make_unique<GaySynth>(loadDefaultWaves());
     
     apvts.state.addListener(this);
 
@@ -38,10 +38,10 @@ GayPolyCommunistAudioProcessor::~GayPolyCommunistAudioProcessor()
 
 //***********************
 //
-void GayPolyCommunistAudioProcessor::loadDefaultWaves()
+juce::Array<juce::AudioBuffer<float>> GayPolyCommunistAudioProcessor::loadDefaultWaves()
 {
-    auto bufferArray = waveLoader->getBufferArrayFromFilePath(GPC_CONSTANTS::defaultFolderPath);
-    
+    auto bufferArray = waveLoader.getBufferArrayFromFilePath(GPC_CONSTANTS::defaultFolderPath);
+    return bufferArray;
 }
 
 //==============================================================================
@@ -110,7 +110,7 @@ void GayPolyCommunistAudioProcessor::changeProgramName (int index, const juce::S
 void GayPolyCommunistAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock) 
 {
     dsp::ProcessSpec spec{ sampleRate, (juce::uint32)samplesPerBlock, 2 };
-    synth.prepare(spec);
+    synth->prepare(spec);
     update();
 }
 
@@ -176,7 +176,7 @@ void GayPolyCommunistAudioProcessor::processBlock (juce::AudioBuffer<float>& buf
 
     if (processing.get() && checkVoices())
     {
-        synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+        synth->renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
     }
     
     for (int chan = 0; chan < buffer.getNumChannels(); chan++)
@@ -228,7 +228,7 @@ void GayPolyCommunistAudioProcessor::setStateInformation (const void* data, int 
 
 void GayPolyCommunistAudioProcessor::update()
 {
-    synth.update(apvts);
+    synth->update(apvts);
     mustUpdateProcessing = false;
 }
 
@@ -464,29 +464,38 @@ WaveLoader& GayPolyCommunistAudioProcessor::getWaveLoader()
 }
 
 // drag/drop returns string array, not sure why
-void GayPolyCommunistAudioProcessor::loadWaveVectorFromFilePaths(const StringArray& filePaths, GaySynth::WaveTableVectors targetOscillator)
+void GayPolyCommunistAudioProcessor::loadWaveVectorFromFilePaths(const StringArray& filePaths, GaySynth::WaveTableVectorIds targetOscillator)
 {
     // I think I have to iterate because each of these could be a directory
     for (auto filePath : filePaths)
     {
         auto bufferArray = waveLoader.getBufferArrayFromFilePath(filePath);
         
-        this->loadWaveVectorFromBufferArray(bufferArray, targetOscillator);
+        this->_loadWaveVectorFromBufferArray(bufferArray, targetOscillator);
     }
 }
 
 
 
-void GayPolyCommunistAudioProcessor::loadWaveVectorFromIndex(int index, GaySynth::WaveTableVectors targetOscillator)
+void GayPolyCommunistAudioProcessor::loadWaveVectorFromIndex(int index, GaySynth::WaveTableVectorIds targetOscillator)
 {
     auto bufferArray = waveLoader.getBufferArrayFromIndex(index);
     
-    this->loadWaveVectorFromBufferArray(bufferArray, targetOscillator);
+    this->_loadWaveVectorFromBufferArray(bufferArray, targetOscillator);
 }
        
 
-void GayPolyCommunistAudioProcessor::loadWaveVectorFromBufferArray( juce::OwnedArray<juce::AudioBuffer<float>>& waveBufferArray,
-                                                                    GaySynth::WaveTableVectors targetOscillator)
+//*************************
+// PRIVATE FUNCTIONS
+
+void GayPolyCommunistAudioProcessor::_loadWaveVectorFromBufferArray( juce::Array<juce::AudioBuffer<float>> waveBufferArray,
+                                                                    GaySynth::WaveTableVectorIds targetOscillator)
 {
     synth->loadWaveVectorFromBufferArray(waveBufferArray, targetOscillator);
+}
+
+
+void GayPolyCommunistAudioProcessor::valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) 
+{
+    mustUpdateProcessing = true;
 }

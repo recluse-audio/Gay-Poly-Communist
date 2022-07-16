@@ -9,8 +9,8 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "../Synth/GaySynth.h"
-#include "../SaveAndLoad/WaveLoader.h"
+#include "GaySynth.h"
+#include "WaveLoader.h"
 
 //==============================================================================
 /**
@@ -23,7 +23,7 @@ public:
     GayPolyCommunistAudioProcessor();
     ~GayPolyCommunistAudioProcessor() override;
 
-    void loadDefaultWaves();
+    juce::Array<juce::AudioBuffer<float>> loadDefaultWaves();
     
     //==============================================================================
     void prepareToPlay (double sampleRate, int samplesPerBlock) override;
@@ -87,9 +87,9 @@ public:
 
     WaveLoader& getWaveLoader();
 
-    void loadWaveVectorFromFilePaths    (const juce::StringArray& filePath,                         GaySynth::WaveTableVectors targetOscillator);
-    void loadWaveVectorFromIndex        (int index,                                                 GaySynth::WaveTableVectors targetOscillator);
-    void loadWaveVectorFromBufferArray  (juce::OwnedArray<juce::AudioBuffer<float>>& bufferArray,   GaySynth::WaveTableVectors targetOscillator);
+    // Actually only loads the buffer array that is made into wave vector.  Current name is a more intuitive interface
+    void loadWaveVectorFromFilePaths    (const juce::StringArray& filePath,                         GaySynth::WaveTableVectorIds targetOscillator);
+    void loadWaveVectorFromIndex        (int index,                                                 GaySynth::WaveTableVectorIds targetOscillator);
 
 
     float getLFODepth(int lfoNum);
@@ -114,10 +114,11 @@ private:
     String osc1WavePath = {""};
     String osc2WavePath = {""};
 
-    void valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) override
-    {
-        mustUpdateProcessing = true;
-    }
+    //*************************
+    // PRIVATE FUNCTIONS
+    void _loadWaveVectorFromBufferArray  (juce::Array<juce::AudioBuffer<float>> bufferArray,   GaySynth::WaveTableVectorIds targetOscillator);
+
+    void valueTreePropertyChanged(juce::ValueTree& treeWhosePropertyHasChanged, const juce::Identifier& property) override;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GayPolyCommunistAudioProcessor)
 };

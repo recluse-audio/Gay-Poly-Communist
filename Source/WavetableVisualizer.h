@@ -11,9 +11,9 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "../WaveTable/WaveTableVector.h"
-#include "../WaveTable/WavetableParser.h"
-#include "../Processor/PluginProcessor.h"
+#include "WaveTableVector.h"
+#include "WavetableParser.h"
+#include "PluginProcessor.h"
 
 //==============================================================================
 /*

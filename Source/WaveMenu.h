@@ -11,16 +11,16 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "../Processor/PluginProcessor.h"
-#include "../SaveAndLoad/WaveLoader.h"
-#include "../LookAndFeel/ArtieFeel.h"
+#include "PluginProcessor.h"
+#include "WaveLoader.h"
+#include "ArtieFeel.h"
 //==============================================================================
 /*
 */
 class WaveMenu  : public juce::Component, Button::Listener
 {
 public:
-    WaveMenu(GayPolyCommunistAudioProcessor& p, int oscillator) : audioProcessor(p), oscNum(oscillator)
+    WaveMenu(GayPolyCommunistAudioProcessor& p, GaySynth::WaveTableVectorIds vectorId) : audioProcessor(p), mVectorId(vectorId)
     {
         setLookAndFeel(&artieFeel);
 
@@ -64,8 +64,7 @@ public:
                 }
                 if (selection > 0)
                 {
-                    auto path = audioProcessor.getWaveLoader().getPathFromIndex(selection - 1);
-                    audioProcessor.loadWaveTables(path, oscNum);
+                    audioProcessor.loadWaveVectorFromIndex(selection, mVectorId);
                 }
             });
         }
@@ -102,7 +101,7 @@ public:
        // menu.addSubMenu("Wave Tables", *vectorMenu);
 
     }
-    void loadTables(OwnedArray<File>& fileArray)
+    void loadTables(juce::OwnedArray<File>& fileArray)
     {
 
     }
@@ -114,7 +113,8 @@ public:
 
 private:
     ArtieFeel artieFeel;
-    int oscNum = 1;
+    GaySynth::WaveTableVectorIds mVectorId;
+    
     std::unique_ptr<WaveLoader> database;
     std::unique_ptr<TextButton> button;
     std::unique_ptr<PopupMenu> menu;

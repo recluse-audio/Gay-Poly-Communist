@@ -11,8 +11,8 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include"../Processor/PluginProcessor.h"
-#include "../LookAndFeel/NameFeel.h"
+#include "PluginProcessor.h"
+#include "NameFeel.h"
 
 //==============================================================================
 /*

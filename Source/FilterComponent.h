@@ -11,8 +11,8 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "../Processor/PluginProcessor.h"
-#include "../Components/OscSlider.h"
+#include "PluginProcessor.h"
+#include "OscSlider.h"
 
 //==============================================================================
 /*

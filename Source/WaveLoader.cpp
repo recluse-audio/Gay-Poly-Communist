@@ -9,8 +9,8 @@
 */
 
 #include "WaveLoader.h"
-#include "../WaveTable/WaveTableVector.h"
-#include "../GPC_Constants.h"
+#include "WaveTableVector.h"
+#include "GPC_Constants.h"
 
 struct WaveFolder
 {
@@ -62,7 +62,7 @@ WaveLoader::~WaveLoader()
 
 //******************
 // INTERFACE TO CALL PRIVATE GET WAVE BUFFERS
-juce::OwnedArray<juce::AudioBuffer<float>> WaveLoader::getBufferArrayFromIndex(int index)
+juce::Array<juce::AudioBuffer<float>> WaveLoader::getBufferArrayFromIndex(int index)
 {
     auto filePath = _getPathFromIndex(index);
     return _getWaveBuffersFromFilePath(filePath);
@@ -71,7 +71,7 @@ juce::OwnedArray<juce::AudioBuffer<float>> WaveLoader::getBufferArrayFromIndex(i
 
 //******************
 // INTERFACE TO CALL PRIVATE GET WAVE BUFFERS
-juce::OwnedArray<juce::AudioBuffer<float>> WaveLoader::getBufferArrayFromFilePath(juce::StringRef filePath)
+juce::Array<juce::AudioBuffer<float>> WaveLoader::getBufferArrayFromFilePath(juce::StringRef filePath)
 {
     return _getWaveBuffersFromFilePath(filePath);
 }
@@ -79,10 +79,10 @@ juce::OwnedArray<juce::AudioBuffer<float>> WaveLoader::getBufferArrayFromFilePat
 
 //******************
 // Private implementation called by various interface methods
-juce::OwnedArray<juce::AudioBuffer<float>> WaveLoader::_getWaveBuffersFromFilePath(juce::StringRef filePath)
+juce::Array<juce::AudioBuffer<float>> WaveLoader::_getWaveBuffersFromFilePath(juce::StringRef filePath)
 {
     auto waveFile = juce::File(filePath);
-    auto bufferArray = juce::OwnedArray<juce::AudioBuffer<float>>();
+    auto bufferArray = juce::Array<juce::AudioBuffer<float>>();
     bufferArray.clear();
     
     if (waveFile.isDirectory())
@@ -95,7 +95,10 @@ juce::OwnedArray<juce::AudioBuffer<float>> WaveLoader::_getWaveBuffersFromFilePa
             
             std::unique_ptr<AudioFormatReader> formatReader{ formatManager.createReaderFor(waveIter) };
 
-            formatReader->read(bufferArray[i], 0, GPC_CONSTANTS::TABLE_SIZE, 0, true, false);
+            auto tempBuffer = juce::AudioBuffer<float>();
+            formatReader->read(&tempBuffer, 0, GPC_CONSTANTS::TABLE_SIZE, 0, true, false);
+            
+            bufferArray.add(tempBuffer);
         }
         return bufferArray;
     }
@@ -103,8 +106,12 @@ juce::OwnedArray<juce::AudioBuffer<float>> WaveLoader::_getWaveBuffersFromFilePa
     {
         if (waveFile.hasFileExtension(".wav"))
         {
-            std::unique_ptr<AudioFormatReader> formatReader{formatManager.createReaderFor(waveFile)};
-            formatReader->read(bufferArray[0], 0, GPC_CONSTANTS::TABLE_SIZE, 0, true, false);
+            std::unique_ptr<AudioFormatReader> formatReader{ formatManager.createReaderFor(waveFile) };
+
+            auto tempBuffer = juce::AudioBuffer<float>();
+            formatReader->read(&tempBuffer, 0, GPC_CONSTANTS::TABLE_SIZE, 0, true, false);
+            
+            bufferArray.add(tempBuffer);
         }
         return bufferArray;
     }
