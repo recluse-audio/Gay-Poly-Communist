@@ -67,6 +67,8 @@
         <FILE id="tNtuxJ" name="GaySynth.h" compile="0" resource="0" file="Source/GaySynth.h"/>
         <FILE id="nUR16w" name="GayVoice.cpp" compile="1" resource="0" file="Source/GayVoice.cpp"/>
         <FILE id="t5n8iz" name="GayVoice.h" compile="0" resource="0" file="Source/GayVoice.h"/>
+        <FILE id="e73HzA" name="ModFriendlyParams.h" compile="0" resource="0"
+              file="Source/ModFriendlyParams.h"/>
       </GROUP>
       <GROUP id="{A51FEACE-1059-FAF5-25C8-E299B238C78B}" name="WaveTable">
         <FILE id="zntbLv" name="WaveTable.h" compile="0" resource="0" file="Source/WaveTable.h"/>

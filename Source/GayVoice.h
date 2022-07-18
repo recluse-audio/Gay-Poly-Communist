@@ -10,24 +10,60 @@
 
 #pragma once
 #include <JuceHeader.h>
-#include "GaySynth.h"
-#include "GayOscillator.h"
 #include "GayADSR.h"
+#include "ModFriendlyParams.h"
+
+class GayParam;
+class GayOscillator;
+class WaveTableVector;
 
 
 class GayVoice : public MPESynthesiserVoice
 {
 public:
+    enum class OscillatorIds
+    {
+        Oscillator1 = 1,
+        Oscillator2,
+        LFO1,
+        LFO2,
+        LFO3
+    };
+    
+    enum class ParamIds
+    {
+        Oscillator1_Gain = 0,
+        Oscillator1_WavePosition,
+        Oscillator1_Frequency,
+        
+        Oscillator2_Gain,
+        Oscillator2_WavePosition,
+        Oscillator2_Frequency,
+        
+        LFO1_Depth,
+        LFO1_Rate,
+        
+        LFO2_Depth,
+        LFO2_Rate,
+        
+        LFO3_Depth,
+        LFO3_Rate,
+        
+        FilterFrequency,
+        FilterResonance,
+        FilterDrive,
+        
+        TotalNumParams // Don't assign this, but use it to resize paramArray
+    };
+    
+    
     GayVoice(WaveTableVector& oscVector1, WaveTableVector& oscVector2,
              WaveTableVector& lfoVector1, WaveTableVector& lfoVector2, WaveTableVector& lfoVector3);
 
-    
+    ~GayVoice();
     void initParams();
     
-    void resetEnvs()
-    {
-        env1.reset(); env2.reset(); env3.reset();
-    }
+    void resetEnvs();
     
     //==============================================================================
     void prepare(const juce::dsp::ProcessSpec& spec);
@@ -62,13 +98,12 @@ public:
 
     void updateFilterMode(int mode);
     
-    WaveTableVector& getTable(int oscNumber);
 
 
 
    // void incrementFilter()
-    // assigning modulators to the oscillators
-    void assignOscMods(GayOscillator* osc, int gainLFO, int waveLFO, int pitchLFO, int gainEnv, int waveEnv, int pitchEnv);
+    // assigning modulators to the the parameters
+    void assignOscMods(GayVoice::OscillatorIds oscId, int gainLFO, int waveLFO, int freqLFO, int gainEnv, int waveEnv, int freqEnv);
 
     void assignFilterMods(int filtLFO, int driveLFO, int resLFO, int filtEnv, int driveEnv, int resEnv);
     
@@ -83,13 +118,19 @@ private:
    
    GayADSR env1, env2, env3;
    GayADSR::Parameters envParam1, envParam2, envParam3;
-
+    
+   std::unique_ptr<GayParam> osc1Freq, osc2Freq;
+   std::unique_ptr<GayParam> osc1Gain, osc2Gain;
+   std::unique_ptr<GayParam> osc1WavePos, osc2WavePos;
    std::unique_ptr<GayParam> filtFreq, filtRes, filtDrive;
    std::unique_ptr<GayParam> lfoRate1, lfoRate2, lfoRate3;
    std::unique_ptr<GayParam> lfoDepth1, lfoDepth2, lfoDepth3;
 
+
    double glideTime = 0.01;
 
    float pitch = 0.f;
+    
+    
     
 };

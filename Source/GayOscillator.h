@@ -11,10 +11,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "WaveTableVector.h"
-#include "GayADSR.h"
 
-
-class GayParam;
 //==============================================================================
 /*
     This should only retrieve samples from the waveVector
@@ -32,15 +29,18 @@ public:
 
     void prepare(double sampleRate);
 
-    void noteOn(float vel, float newFreq);
+    void noteOn(float vel, float freq);
 
-    void noteOff(){}
+    void noteOff();
  
-    //==============================================================================
-    // called by pitch bend
-    void setFrequency(float newValue, bool force = false);
-
-    void setGain(float newValue);
+    
+    //***************
+    // SETTERS
+    void setFrequency(float freq);
+    void setGain(float gain);
+    void setWavePosition(float wavePosition);
+    
+    
 
     void reset() noexcept;
 
@@ -50,38 +50,30 @@ public:
 
     //==============================================================================
 
-    WaveTableVector& getWaveVector();
 
-
-    // changes in value tree
-    void update(float gain, float gainLFOScale, float gainEnvScale,
-                float frequency, float frequencyLFOScale, float frequencyEnvScale,
-                float wavePosition, float waveLFOScale, float waveEnvScale);
-    
     void update(float newGain, float frequency, float wavePosition);
     
-    
-
-    void assignLFO(GayOscillator* mLFO, GayParam::ParamType pType);
-    
-    void setNoLFO(GayParam::ParamType pType);
-
-    void assignEnvelope(GayADSR* mEnv, GayParam::ParamType pType);
-    
-    void setNoEnv(GayParam::ParamType pType);
     
 private:
     WaveTableVector& waveVector;
     double glideTime = 0.1;
-    double oSampleRate = -1;
+    double mSampleRate = -1;
     float currentIndex = 0;
-    std::unique_ptr<GayParam> mGain, mWavePosition, mFrequency;
+    
+    
+    juce::Atomic<float> mGain         { 0.f };
+    juce::Atomic<float> mWavePosition { 0.f };
+    juce::Atomic<float> mFrequency    { 0.f };
+    
+//    juce::Atomic<float> mGainOffset         { 0.f };
+//    juce::Atomic<float> mWavePositionOffset { 0.f };
+//    juce::Atomic<float> mFrequencyOffset    { 0.f };
     
 //**************
 // PRIVATE FUNCTIONS
     
     float _getNextSampleIndex(float freq);
-
+    
     
 
 };

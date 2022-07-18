@@ -13,7 +13,6 @@
 #include "GayOscillator.h"
 #include "GayADSR.h"
 
-class GayOscillator;
 
 class GayParam
 {

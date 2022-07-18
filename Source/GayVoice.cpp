@@ -9,6 +9,10 @@
 */
 
 #include "GayVoice.h"
+#include "GayParam.h"
+#include "GayOscillator.h"
+#include "GayADSR.h"
+
 
 GayVoice::GayVoice(WaveTableVector& oscVector1, WaveTableVector& oscVector2,
          WaveTableVector& lfoVector1, WaveTableVector& lfoVector2, WaveTableVector& lfoVector3)
@@ -24,9 +28,21 @@ GayVoice::GayVoice(WaveTableVector& oscVector1, WaveTableVector& oscVector2,
 
 }
 
+GayVoice::~GayVoice()
+{
+    
+}
 
 void GayVoice::initParams()
 {
+    osc1Freq = std::make_unique<GayParam>(GayParam::ParamType::Frequency);
+    osc1Gain = std::make_unique<GayParam>(GayParam::ParamType::Gain);
+    osc1WavePos = std::make_unique<GayParam>(GayParam::ParamType::WavePosition);
+    
+    osc2Freq = std::make_unique<GayParam>(GayParam::ParamType::Frequency);
+    osc2Gain = std::make_unique<GayParam>(GayParam::ParamType::Gain);
+    osc2WavePos = std::make_unique<GayParam>(GayParam::ParamType::WavePosition);
+    
     lfoDepth1 = std::make_unique<GayParam>(GayParam::ParamType::Gain);
     lfoRate1 = std::make_unique<GayParam>(GayParam::ParamType::Frequency);
     
@@ -303,20 +319,20 @@ void GayVoice::update(AudioProcessorValueTreeState& apvts)
     //////////////// OSCILLATORS ///////////////
     
     // oscillator 1 params
-    auto g1 = apvts.getRawParameterValue("Gain 1")->load();
-    auto gLFOScale1 = apvts.getRawParameterValue("Gain 1 LFO Scale")->load();
-    auto gEnvScale1 = apvts.getRawParameterValue("Gain 1 Env Scale")->load();
+    osc1Gain->setValue(apvts.getRawParameterValue("Gain 1")->load());
+    osc1Gain->setLFOScale(apvts.getRawParameterValue("Gain 1 LFO Scale")->load());
+    osc1Gain->setEnvScale(apvts.getRawParameterValue("Gain 1 Env Scale")->load());
 
-    auto w1 = apvts.getRawParameterValue("Wave 1 Position")->load();
-    auto wLFOScale1 = apvts.getRawParameterValue("Wave 1 LFO Scale")->load();
-    auto wEnvScale1 = apvts.getRawParameterValue("Wave 1 Env Scale")->load();
+    osc1WavePos->setValue(apvts.getRawParameterValue("Wave 1 Position")->load());
+    osc1WavePos->setLFOScale(apvts.getRawParameterValue("Wave 1 LFO Scale")->load());
+    osc1WavePos->setEnvScale(apvts.getRawParameterValue("Wave 1 Env Scale")->load());
 
-    auto p1 = apvts.getRawParameterValue("Pitch 1")->load();
-    auto pLFOScale1 = apvts.getRawParameterValue("Pitch 1 LFO Scale")->load();
-    auto pEnvScale1 = apvts.getRawParameterValue("Pitch 1 Env Scale")->load();
+    osc1Freq->setOffset(apvts.getRawParameterValue("Pitch 1")->load());
+    osc1Freq->setLFOScale(apvts.getRawParameterValue("Pitch 1 LFO Scale")->load());
+    osc1Freq->setEnvScale(apvts.getRawParameterValue("Pitch 1 Env Scale")->load());
 
-    osc1->update(g1, gLFOScale1, gEnvScale1,
-        w1, wLFOScale1, wEnvScale1, p1, pLFOScale1, pEnvScale1);
+
+    
 
     // oscillator 1 modulation sources
     auto gLFO1 = apvts.getRawParameterValue("Gain 1 LFO Source")->load();
@@ -328,7 +344,6 @@ void GayVoice::update(AudioProcessorValueTreeState& apvts)
     auto pLFO1 = apvts.getRawParameterValue("Pitch 1 LFO Source")->load();
     auto pEnv1 = apvts.getRawParameterValue("Pitch 1 Env Source")->load();
 
-    assignOscMods(osc1.get(), gLFO1, wLFO1, pLFO1, gEnv1, wEnv1, pEnv1);
 
     // oscillator 2 params
     auto g2 = apvts.getRawParameterValue("Gain 2")->load();
@@ -343,8 +358,7 @@ void GayVoice::update(AudioProcessorValueTreeState& apvts)
     auto pLFOScale2 = apvts.getRawParameterValue("Pitch 2 LFO Scale")->load();
     auto pEnvScale2 = apvts.getRawParameterValue("Pitch 2 Env Scale")->load();
 
-    osc2->update(g2, gLFOScale2, gEnvScale2,
-        w2, wLFOScale2, wEnvScale2, p2, pLFOScale2, pEnvScale2);
+
 
     // oscillator 2 modulation sources
     auto gLFO2 = apvts.getRawParameterValue("Gain 2 LFO Source")->load();
@@ -382,25 +396,29 @@ void GayVoice::updateFilterMode(int mode)
         break;
     }
 }
-WaveTableVector& GayVoice::getTable(int oscNumber)
-{
-    if (oscNumber == 1)
-    {
-        return osc1->getWaveVector();
-    }
-    if (oscNumber == 2)
-    {
-        return osc2->getWaveVector();
-    }
 
-}
 
 
 
 // void incrementFilter()
 // assigning modulators to the oscillators
-void GayVoice::assignOscMods(GayOscillator* osc, int gainLFO, int waveLFO, int pitchLFO, int gainEnv, int waveEnv, int pitchEnv)
+void GayVoice::assignOscMods(GayVoice::OscillatorIds oscId, int gainLFO, int waveLFO, int pitchLFO, int gainEnv, int waveEnv, int pitchEnv)
 {
+    
+    osc1Freq->assignLFO(<#GayOscillator *mLFO#>)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     auto gain = GayParam::ParamType::Gain;
     auto wave = GayParam::ParamType::WavePosition;
     auto freq = GayParam::ParamType::Frequency;

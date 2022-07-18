@@ -9,13 +9,9 @@
 */
 
 #include "GayOscillator.h"
-#include "GayParam.h"
 
 GayOscillator::GayOscillator(WaveTableVector& vector)  : waveVector(vector)
 {
-    mGain = std::make_unique<GayParam>(GayParam::ParamType::Gain);
-    mFrequency = std::make_unique<GayParam>(GayParam::ParamType::Frequency);
-    mWavePosition = std::make_unique<GayParam>(GayParam::ParamType::WavePosition);
 
 }
 
@@ -23,29 +19,27 @@ GayOscillator::~GayOscillator(){}
 
 void GayOscillator::prepare(double sampleRate)
 {
-
-    oSampleRate = sampleRate;
-    mGain->prepare(sampleRate);
-    mFrequency->prepare(sampleRate);
-    mWavePosition->prepare(sampleRate);
-
+    mSampleRate = sampleRate;
 }
 
 void GayOscillator::noteOn(float vel, float newFreq)
 {
-    mFrequency->setValue(newFreq);
+    mFrequency = newFreq;
 }
 
 void GayOscillator::noteOff(){}
 
-//==============================================================================
-// called by pitch bend
-void GayOscillator::setFrequency(float newValue, bool force = false)
+//*******************
+// Parameter values set by basic synth operations (note on
+void GayOscillator::setFrequency(float freq)
 {
-    mFrequency->setValue(newValue);
+    mFrequency = freq;
 }
 
-void GayOscillator::setGain(float newValue){}
+void GayOscillator::setGain(float gain)
+{
+    mGain = gain;
+}
 
 void GayOscillator::reset() noexcept{}
 
@@ -54,13 +48,13 @@ void GayOscillator::reset() noexcept{}
 float GayOscillator::getNextSample()
 {
     // increments freq param while calculating new phase inc and next sample
-    float nextIndex     = _getNextSampleIndex(mFrequency->getNextValue());
+    float nextIndex     = _getNextSampleIndex(mFrequency.get());
     
-    float nextWavePos   = mWavePosition->getNextValue();
+    float nextWavePos   = mWavePosition.get();
     
     float nextSample    = waveVector.getSampleAtIndexAndWavePosition(nextIndex, nextWavePos);
     
-    return nextSample * mGain->getNextValue();
+    return nextSample * mGain.get();
 }
 
 //==============================================================================
@@ -71,79 +65,14 @@ WaveTableVector& GayOscillator::getWaveVector()
 }
 
 
-// changes in value tree
-void GayOscillator::update(float gain, float gainLFOScale, float gainEnvScale,
-            float frequency, float frequencyLFOScale, float frequencyEnvScale,
-            float wavePosition, float waveLFOScale, float waveEnvScale)
-{
-    mGain->setValue(gain);
-    mGain->setLFOScale(gainLFOScale);
-    mGain->setEnvScale(gainEnvScale);
-
-    mFrequency->setOffset(frequency);
-    mFrequency->setLFOScale(frequencyLFOScale);
-    mFrequency->setEnvScale(frequencyEnvScale);
-
-    mWavePosition->setValue(wavePosition);
-    mWavePosition->setLFOScale(waveLFOScale);
-    mWavePosition->setEnvScale(waveEnvScale);
-
-}
 
 void GayOscillator::update(float newGain, float frequency, float wavePosition)
 {
-    mGain->setValue(newGain);
-    mFrequency->setOffset(frequency);
+    mGain.setValue(newGain);
+    mFrequency.setOffset(frequency);
     mWavePosition->setValue(wavePosition);
 }
 
-
-
-void GayOscillator::assignLFO(GayOscillator* mLFO, GayParam::ParamType pType)
-{
-    using GayType = GayParam::ParamType;
-    
-    if (pType == GayType::Gain)
-        mGain->assignLFO(mLFO);
-    if (pType == GayType::WavePosition)
-        mWavePosition->assignLFO(mLFO);
-    if (pType == GayParam::Frequency)
-        mFrequency->assignLFO(mLFO);
-}
-
-void GayOscillator::setNoLFO(GayParam::ParamType pType)
-{
-    using GayType = GayParam::ParamType;
-    if (pType == GayType::Gain)
-        mGain->setNoLFO();
-    if (pType == GayType::WavePosition)
-        mWavePosition->setNoLFO();
-    if (pType == GayParam::Frequency)
-        mFrequency->setNoLFO();
-}
-
-void GayOscillator::assignEnvelope(GayADSR* mEnv, GayParam::ParamType pType)
-{
-    using GayType = GayParam::ParamType;
-    if (pType == GayType::Gain)
-        mGain->assignEnvelope(mEnv);
-    if (pType == GayType::WavePosition)
-        mWavePosition->assignEnvelope(mEnv);
-    if (pType == GayParam::Frequency)
-        mFrequency->assignEnvelope(mEnv);
-    //gain->assignEnvelope(mEnv);
-}
-
-void GayOscillator::setNoEnv(GayParam::ParamType pType)
-{
-    using GayType = GayParam::ParamType;
-    if (pType == GayType::Gain)
-        mGain->setNoEnv();
-    if (pType == GayType::WavePosition)
-        mWavePosition->setNoEnv();
-    if (pType == GayParam::Frequency)
-        mFrequency->setNoEnv();
-}
 
 //*****************
 // PRIVATE FUNCTIONS
