@@ -44,7 +44,7 @@ void GayOscillator::setGain(float gain)
 void GayOscillator::reset() noexcept{}
 
 //*****************
-// SAMPLE RETRIEVAL
+// SAMPLE RETRIEVAL AND INCREMENT
 float GayOscillator::getNextSample()
 {
     // increments freq param while calculating new phase inc and next sample
@@ -54,18 +54,22 @@ float GayOscillator::getNextSample()
     
     float nextSample    = waveVector.getSampleAtIndexAndWavePosition(nextIndex, nextWavePos);
     
-    return nextSample * mGain.get();
+    currentSample = nextSample * mGain.get();
+    
+    return currentSample.get();
 }
 
-//==============================================================================
 
-WaveTableVector& GayOscillator::getWaveVector()
+//*****************
+// SAMPLE RETRIEVAL
+float GayOscillator::getCurrentSample()
 {
-    return waveVector;
+    return currentSample.get();
 }
 
 
 
+//==========================================
 void GayOscillator::update(float newGain, float frequency, float wavePosition)
 {
     mGain.setValue(newGain);
@@ -79,7 +83,7 @@ void GayOscillator::update(float newGain, float frequency, float wavePosition)
 
 float GayOscillator::_getNextSampleIndex(float freq)
 {
-    int tableSizeOverSampleRate = GPC_CONSTANTS::TABLE_SIZE / oSampleRate;
+    int tableSizeOverSampleRate = GPC_CONSTANTS::TABLE_SIZE / mSampleRate;
     
     float phaseIncrement = freq * tableSizeOverSampleRate;
     

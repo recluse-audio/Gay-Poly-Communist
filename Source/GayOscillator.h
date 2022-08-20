@@ -47,6 +47,7 @@ public:
     //*****************
     // SAMPLE RETRIEVAL
     float getNextSample();
+    float getCurrentSample();
 
     //==============================================================================
 
@@ -62,8 +63,9 @@ private:
     
     
     juce::Atomic<float> mGain         { 0.f };
-    juce::Atomic<float> mWavePosition { 0.f };
     juce::Atomic<float> mFrequency    { 0.f };
+    juce::Atomic<float> mWavePosition { 0.f };
+    juce::Atomic<float> currentSample { 0.f };
     
 //    juce::Atomic<float> mGainOffset         { 0.f };
 //    juce::Atomic<float> mWavePositionOffset { 0.f };

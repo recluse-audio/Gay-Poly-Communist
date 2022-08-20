@@ -405,7 +405,21 @@ void GayVoice::updateFilterMode(int mode)
 void GayVoice::assignOscMods(GayVoice::OscillatorIds oscId, int gainLFO, int waveLFO, int pitchLFO, int gainEnv, int waveEnv, int pitchEnv)
 {
     
-    osc1Freq->assignLFO(<#GayOscillator *mLFO#>)
+    GayOscillator* osc = nullptr;
+    
+    switch(oscId)
+    {
+        case GayVoice::OscillatorIds::Oscillator1:
+            osc = osc1.get(); break;
+        case GayVoice::OscillatorIds::Oscillator2:
+            osc = osc2.get(); break;
+        case GayVoice::OscillatorIds::LFO1:
+            osc = lfo1.get(); break;
+        case GayVoice::OscillatorIds::LFO2:
+            osc = lfo2.get(); break;
+        case GayVoice::OscillatorIds::LFO3:
+            osc = lfo3.get(); break;
+    }
     
     
     
