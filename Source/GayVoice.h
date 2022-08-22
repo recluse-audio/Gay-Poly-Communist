@@ -12,49 +12,16 @@
 #include <JuceHeader.h>
 #include "GayADSR.h"
 #include "ModFriendlyParams.h"
+#include "ObjectID.h"
 
 class GayParam;
 class GayOscillator;
 class WaveTableVector;
 
-
 class GayVoice : public MPESynthesiserVoice
 {
 public:
-    enum class OscillatorIds
-    {
-        Oscillator1 = 1,
-        Oscillator2,
-        LFO1,
-        LFO2,
-        LFO3
-    };
-    
-    enum class ParamIds
-    {
-        Oscillator1_Gain = 0,
-        Oscillator1_WavePosition,
-        Oscillator1_Frequency,
-        
-        Oscillator2_Gain,
-        Oscillator2_WavePosition,
-        Oscillator2_Frequency,
-        
-        LFO1_Depth,
-        LFO1_Rate,
-        
-        LFO2_Depth,
-        LFO2_Rate,
-        
-        LFO3_Depth,
-        LFO3_Rate,
-        
-        FilterFrequency,
-        FilterResonance,
-        FilterDrive,
-        
-        TotalNumParams // Don't assign this, but use it to resize paramArray
-    };
+
     
     
     GayVoice(WaveTableVector& oscVector1, WaveTableVector& oscVector2,
@@ -88,6 +55,8 @@ public:
     void renderNextBlock(juce::AudioBuffer<float>& outputBuffer, int startSample, int numSamples) override;
 
 
+    void incrementOscillators();
+    
     void incrementLFOs();
 
     void incrementEnvelopes();
@@ -98,12 +67,12 @@ public:
 
     void updateFilterMode(int mode);
     
-
+    
 
 
    // void incrementFilter()
     // assigning modulators to the the parameters
-    void assignOscMods(GayVoice::OscillatorIds oscId, int gainLFO, int waveLFO, int freqLFO, int gainEnv, int waveEnv, int freqEnv);
+    void assignOscMods(GayOscillator* osc, int gainLFO, int waveLFO, int freqLFO, int gainEnv, int waveEnv, int freqEnv);
 
     void assignFilterMods(int filtLFO, int driveLFO, int resLFO, int filtEnv, int driveEnv, int resEnv);
     

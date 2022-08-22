@@ -12,7 +12,7 @@
 #include "GayParam.h"
 #include "GayOscillator.h"
 #include "GayADSR.h"
-
+#include "ObjectIDs.h"
 
 GayVoice::GayVoice(WaveTableVector& oscVector1, WaveTableVector& oscVector2,
          WaveTableVector& lfoVector1, WaveTableVector& lfoVector2, WaveTableVector& lfoVector3)
@@ -318,6 +318,10 @@ void GayVoice::update(AudioProcessorValueTreeState& apvts)
 
     //////////////// OSCILLATORS ///////////////
     
+    osc1->updateGainOffset(apvts.getRawParameterValue("Gain 1")->load());
+    osc1->updateWaveOffset(apvts.getRawParameterValue("Wave 1 Position")->load());
+    osc1->updateFreqOffset(apvts.getRawParameterValue("Pitch 1")->load());
+    
     // oscillator 1 params
     osc1Gain->setValue(apvts.getRawParameterValue("Gain 1")->load());
     osc1Gain->setLFOScale(apvts.getRawParameterValue("Gain 1 LFO Scale")->load());
@@ -402,36 +406,8 @@ void GayVoice::updateFilterMode(int mode)
 
 // void incrementFilter()
 // assigning modulators to the oscillators
-void GayVoice::assignOscMods(GayVoice::OscillatorIds oscId, int gainLFO, int waveLFO, int pitchLFO, int gainEnv, int waveEnv, int pitchEnv)
+void GayVoice::assignOscMods(GayOscillator* osc, int gainLFO, int waveLFO, int freqLFO, int gainEnv, int waveEnv, int freqEnv)
 {
-    
-    GayOscillator* osc = nullptr;
-    
-    switch(oscId)
-    {
-        case GayVoice::OscillatorIds::Oscillator1:
-            osc = osc1.get(); break;
-        case GayVoice::OscillatorIds::Oscillator2:
-            osc = osc2.get(); break;
-        case GayVoice::OscillatorIds::LFO1:
-            osc = lfo1.get(); break;
-        case GayVoice::OscillatorIds::LFO2:
-            osc = lfo2.get(); break;
-        case GayVoice::OscillatorIds::LFO3:
-            osc = lfo3.get(); break;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     auto gain = GayParam::ParamType::Gain;
     auto wave = GayParam::ParamType::WavePosition;
@@ -439,51 +415,45 @@ void GayVoice::assignOscMods(GayVoice::OscillatorIds oscId, int gainLFO, int wav
 
     switch (gainLFO)
     {
-        case 0: osc->setNoLFO(gain); break;
-        case 1: osc->assignLFO(lfo1.get(), gain); break;
-        case 2: osc->assignLFO(lfo2.get(), gain); break;
-        case 3: osc->assignLFO(lfo3.get(), gain); break;
+        case 1: osc->assignGainLFO(lfo1.get()); break;
+        case 2: osc->assignGainLFO(lfo2.get()); break;
+        case 3: osc->assignGainLFO(lfo3.get()); break;
     }
 
     switch (waveLFO)
     {
-        case 0: osc->setNoLFO(wave); break;
-        case 1: osc->assignLFO(lfo1.get(), wave); break;
-        case 2: osc->assignLFO(lfo2.get(), wave); break;
-        case 3: osc->assignLFO(lfo3.get(), wave); break;
+        case 1: osc->assignWaveLFO(lfo1.get()); break;
+        case 2: osc->assignWaveLFO(lfo2.get()); break;
+        case 3: osc->assignWaveLFO(lfo3.get()); break;
     }
 
-    switch (pitchLFO)
+    switch (freqLFO)
     {
-        case 0: osc->setNoLFO(freq); break;
-        case 1: osc->assignLFO(lfo1.get(), freq); break;
-        case 2: osc->assignLFO(lfo2.get(), freq); break;
-        case 3: osc->assignLFO(lfo3.get(), freq); break;
+        case 1: osc->assignFreqLFO(lfo1.get()); break;
+        case 2: osc->assignFreqLFO(lfo2.get()); break;
+        case 3: osc->assignFreqLFO(lfo3.get()); break;
     }
 
     // assinging envelopes to oscillators first, then to filter that is held by the voice itself
     switch (gainEnv)
     {
-    case 0: osc->setNoEnv(gain); break;
-    case 1: osc->assignEnvelope(&env1, gain); break;
-    case 2: osc->assignEnvelope(&env2, gain); break;
-    case 3: osc->assignEnvelope(&env3, gain); break;
+        case 1: osc->assignGainEnvelope(&env1); break;
+        case 2: osc->assignGainEnvelope(&env2); break;
+        case 3: osc->assignGainEnvelope(&env3); break;
     }
 
     switch (waveEnv)
     {
-    case 0: osc->setNoEnv(wave); break;
-    case 1: osc->assignEnvelope(&env1, wave); break;
-    case 2: osc->assignEnvelope(&env2, wave); break;
-    case 3: osc->assignEnvelope(&env3, wave); break;
+        case 1: osc->assignWaveEnvelope(&env1); break;
+        case 2: osc->assignWaveEnvelope(&env2); break;
+        case 3: osc->assignWaveEnvelope(&env3); break;
     }
 
-    switch (pitchEnv)
+    switch (freqEnv)
     {
-    case 0: osc->setNoEnv(freq); break;
-    case 1: osc->assignEnvelope(&env1, freq); break;
-    case 2: osc->assignEnvelope(&env2, freq); break;
-    case 3: osc->assignEnvelope(&env3, freq); break;
+        case 1: osc->assignFreqEnvelope(&env1); break;
+        case 2: osc->assignFreqEnvelope(&env2); break;
+        case 3: osc->assignFreqEnvelope(&env3); break;
     }
         
 }
@@ -493,35 +463,35 @@ void GayVoice::assignFilterMods(int filtLFO, int driveLFO, int resLFO, int filtE
     // These are held in the GayVoice class so it calls the assign functions on the GayParam directly
     switch (filtLFO)
     {
-    case 0: filtFreq->setNoLFO(); break;
-    case 1: filtFreq->assignLFO(lfo1.get()); break;
-    case 2: filtFreq->assignLFO(lfo2.get()); break;
-    case 3: filtFreq->assignLFO(lfo3.get()); break;
+        case 0: filtFreq->setNoLFO(); break;
+        case 1: filtFreq->assignLFO(lfo1.get()); break;
+        case 2: filtFreq->assignLFO(lfo2.get()); break;
+        case 3: filtFreq->assignLFO(lfo3.get()); break;
     }
 
     switch (resLFO)
     {
-    case 0: filtRes->setNoLFO(); break;
-    case 1: filtRes->assignLFO(lfo1.get()); break;
-    case 2: filtRes->assignLFO(lfo2.get()); break;
-    case 3: filtRes->assignLFO(lfo3.get()); break;
+        case 0: filtRes->setNoLFO(); break;
+        case 1: filtRes->assignLFO(lfo1.get()); break;
+        case 2: filtRes->assignLFO(lfo2.get()); break;
+        case 3: filtRes->assignLFO(lfo3.get()); break;
     }
 
     // local filter parameters
     switch (filtEnv)
     {
-    case 0: filtFreq->setNoEnv(); break;
-    case 1: filtFreq->assignEnvelope(&env1); break;
-    case 2: filtFreq->assignEnvelope(&env2); break;
-    case 3: filtFreq->assignEnvelope(&env3); break;
+        case 0: filtFreq->setNoEnv(); break;
+        case 1: filtFreq->assignEnvelope(&env1); break;
+        case 2: filtFreq->assignEnvelope(&env2); break;
+        case 3: filtFreq->assignEnvelope(&env3); break;
     }
 
     switch (resEnv)
     {
-    case 0: filtRes->setNoEnv(); break;
-    case 1: filtRes->assignEnvelope(&env1); break;
-    case 2: filtRes->assignEnvelope(&env2); break;
-    case 3: filtRes->assignEnvelope(&env3); break;
+        case 0: filtRes->setNoEnv(); break;
+        case 1: filtRes->assignEnvelope(&env1); break;
+        case 2: filtRes->assignEnvelope(&env2); break;
+        case 3: filtRes->assignEnvelope(&env3); break;
     }
 
 }
@@ -531,49 +501,49 @@ void GayVoice::assignLFOMods(int rateEnv1, int rateEnv2, int rateEnv3, int depth
 {
     switch (rateEnv1)
     {
-    case 0: lfoRate1->setNoEnv(); break;
-    case 1: lfoRate1->assignEnvelope(&env1); break;
-    case 2: lfoRate1->assignEnvelope(&env2); break;
-    case 3: lfoRate1->assignEnvelope(&env3); break;
+        case 0: lfoRate1->setNoEnv(); break;
+        case 1: lfoRate1->assignEnvelope(&env1); break;
+        case 2: lfoRate1->assignEnvelope(&env2); break;
+        case 3: lfoRate1->assignEnvelope(&env3); break;
     }
 
     switch (rateEnv2)
     {
-    case 0: lfoRate2->setNoEnv(); break;
-    case 1: lfoRate2->assignEnvelope(&env1); break;
-    case 2: lfoRate2->assignEnvelope(&env2); break;
-    case 3: lfoRate2->assignEnvelope(&env3); break;
+        case 0: lfoRate2->setNoEnv(); break;
+        case 1: lfoRate2->assignEnvelope(&env1); break;
+        case 2: lfoRate2->assignEnvelope(&env2); break;
+        case 3: lfoRate2->assignEnvelope(&env3); break;
     }
 
     switch (rateEnv3)
     {
-    case 0: lfoRate3->setNoEnv(); break;
-    case 1: lfoRate3->assignEnvelope(&env1); break;
-    case 2: lfoRate3->assignEnvelope(&env2); break;
-    case 3: lfoRate3->assignEnvelope(&env3); break;
+        case 0: lfoRate3->setNoEnv(); break;
+        case 1: lfoRate3->assignEnvelope(&env1); break;
+        case 2: lfoRate3->assignEnvelope(&env2); break;
+        case 3: lfoRate3->assignEnvelope(&env3); break;
     }
     // local filter parameters
     switch (depthEnv1)
     {
-    case 0: lfoDepth1->setNoEnv(); break;
-    case 1: lfoDepth1->assignEnvelope(&env1); break;
-    case 2: lfoDepth1->assignEnvelope(&env2); break;
-    case 3: lfoDepth1->assignEnvelope(&env3); break;
+        case 0: lfoDepth1->setNoEnv(); break;
+        case 1: lfoDepth1->assignEnvelope(&env1); break;
+        case 2: lfoDepth1->assignEnvelope(&env2); break;
+        case 3: lfoDepth1->assignEnvelope(&env3); break;
     }
 
     switch (depthEnv2)
     {
-    case 0: lfoDepth2->setNoEnv(); break;
-    case 1: lfoDepth2->assignEnvelope(&env1); break;
-    case 2: lfoDepth2->assignEnvelope(&env2); break;
-    case 3: lfoDepth2->assignEnvelope(&env3); break;
+        case 0: lfoDepth2->setNoEnv(); break;
+        case 1: lfoDepth2->assignEnvelope(&env1); break;
+        case 2: lfoDepth2->assignEnvelope(&env2); break;
+        case 3: lfoDepth2->assignEnvelope(&env3); break;
     }
 
     switch (depthEnv3)
     {
-    case 0: lfoDepth3->setNoEnv(); break;
-    case 1: lfoDepth3->assignEnvelope(&env1); break;
-    case 2: lfoDepth3->assignEnvelope(&env2); break;
-    case 3: lfoDepth3->assignEnvelope(&env3); break;
+        case 0: lfoDepth3->setNoEnv(); break;
+        case 1: lfoDepth3->assignEnvelope(&env1); break;
+        case 2: lfoDepth3->assignEnvelope(&env2); break;
+        case 3: lfoDepth3->assignEnvelope(&env3); break;
     }
 }

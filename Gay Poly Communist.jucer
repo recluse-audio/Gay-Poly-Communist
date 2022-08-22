@@ -6,6 +6,24 @@
               pluginCode="GPC0" pluginManufacturerCode="Recl" pluginAUMainType="'aumu'">
   <MAINGROUP id="IbflzF" name="Gay Poly Communist">
     <GROUP id="{CFF36181-D2F0-986C-BA47-E1BB90F956DE}" name="Source">
+      <GROUP id="{FFFD292C-9AF2-DB00-DDB6-506CE06797C5}" name="Parameters">
+        <FILE id="ar5iWj" name="Parameter_WavePosition.cpp" compile="1" resource="0"
+              file="Source/Parameter_WavePosition.cpp"/>
+        <FILE id="BoQTVl" name="Parameter_WavePosition.h" compile="0" resource="0"
+              file="Source/Parameter_WavePosition.h"/>
+        <FILE id="Z70nK2" name="Parameter_Gain.cpp" compile="1" resource="0"
+              file="Source/Parameter_Gain.cpp"/>
+        <FILE id="nMfbJC" name="Parameter_Gain.h" compile="0" resource="0"
+              file="Source/Parameter_Gain.h"/>
+        <FILE id="A3sEQZ" name="Parameter_Frequency.cpp" compile="1" resource="0"
+              file="Source/Parameter_Frequency.cpp"/>
+        <FILE id="LqVJu2" name="Parameter_Frequency.h" compile="0" resource="0"
+              file="Source/Parameter_Frequency.h"/>
+        <FILE id="utE2p0" name="Parameter_Base.cpp" compile="1" resource="0"
+              file="Source/Parameter_Base.cpp"/>
+        <FILE id="sspADO" name="Parameter_Base.h" compile="0" resource="0"
+              file="Source/Parameter_Base.h"/>
+      </GROUP>
       <GROUP id="{2B27576B-F11D-BC98-4592-36885FB4AE4E}" name="Save/Load">
         <FILE id="VpuFEQ" name="PresetLoader.cpp" compile="1" resource="0"
               file="Source/PresetLoader.cpp"/>
@@ -92,6 +110,7 @@
         <FILE id="IgyYlW" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
       </GROUP>
     </GROUP>
+    <FILE id="bzF2lm" name="ObjectID.h" compile="0" resource="0" file="Source/ObjectID.h"/>
     <FILE id="sQTsLR" name="GPC_Constants.h" compile="0" resource="0" file="Source/GPC_Constants.h"/>
   </MAINGROUP>
   <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
