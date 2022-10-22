@@ -78,6 +78,11 @@
         <FILE id="HUzQ2w" name="NameFeel.h" compile="0" resource="0" file="Source/NameFeel.h"/>
       </GROUP>
       <GROUP id="{34557F00-31F2-D788-E1EA-ECD8A1A73BA6}" name="Synth">
+        <FILE id="uukwPy" name="GayFilter.cpp" compile="1" resource="0" file="Source/GayFilter.cpp"/>
+        <FILE id="REXNQa" name="GayFilter.h" compile="0" resource="0" file="Source/GayFilter.h"/>
+        <FILE id="itoCxD" name="GayInterface.cpp" compile="1" resource="0"
+              file="Source/GayInterface.cpp"/>
+        <FILE id="j08the" name="GayInterface.h" compile="0" resource="0" file="Source/GayInterface.h"/>
         <FILE id="u2bKxP" name="GayOscillator.cpp" compile="1" resource="0"
               file="Source/GayOscillator.cpp"/>
         <FILE id="gcc4Lw" name="GayOscillator.h" compile="0" resource="0" file="Source/GayOscillator.h"/>

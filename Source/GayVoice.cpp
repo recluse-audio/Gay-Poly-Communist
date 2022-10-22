@@ -12,7 +12,7 @@
 #include "GayParam.h"
 #include "GayOscillator.h"
 #include "GayADSR.h"
-#include "ObjectIDs.h"
+#include "ObjectID.h"
 
 GayVoice::GayVoice(WaveTableVector& oscVector1, WaveTableVector& oscVector2,
          WaveTableVector& lfoVector1, WaveTableVector& lfoVector2, WaveTableVector& lfoVector3)
@@ -35,26 +35,26 @@ GayVoice::~GayVoice()
 
 void GayVoice::initParams()
 {
-    osc1Freq = std::make_unique<GayParam>(GayParam::ParamType::Frequency);
-    osc1Gain = std::make_unique<GayParam>(GayParam::ParamType::Gain);
-    osc1WavePos = std::make_unique<GayParam>(GayParam::ParamType::WavePosition);
+    osc1Freq 		= std::make_unique<GayParam>(GayParam::ParamType::Frequency);
+    osc1Gain 		= std::make_unique<GayParam>(GayParam::ParamType::Gain);
+    osc1WavePos 	= std::make_unique<GayParam>(GayParam::ParamType::WavePosition);
     
-    osc2Freq = std::make_unique<GayParam>(GayParam::ParamType::Frequency);
-    osc2Gain = std::make_unique<GayParam>(GayParam::ParamType::Gain);
-    osc2WavePos = std::make_unique<GayParam>(GayParam::ParamType::WavePosition);
+    osc2Freq 		= std::make_unique<GayParam>(GayParam::ParamType::Frequency);
+    osc2Gain 		= std::make_unique<GayParam>(GayParam::ParamType::Gain);
+    osc2WavePos 	= std::make_unique<GayParam>(GayParam::ParamType::WavePosition);
     
-    lfoDepth1 = std::make_unique<GayParam>(GayParam::ParamType::Gain);
-    lfoRate1 = std::make_unique<GayParam>(GayParam::ParamType::Frequency);
+    lfoDepth1 		= std::make_unique<GayParam>(GayParam::ParamType::Gain);
+    lfoRate1 		= std::make_unique<GayParam>(GayParam::ParamType::Frequency);
     
-    lfoDepth2 = std::make_unique<GayParam>(GayParam::ParamType::Gain);
-    lfoRate2 = std::make_unique<GayParam>(GayParam::ParamType::Frequency);
+    lfoDepth2 		= std::make_unique<GayParam>(GayParam::ParamType::Gain);
+    lfoRate2 		= std::make_unique<GayParam>(GayParam::ParamType::Frequency);
     
-    lfoDepth3 = std::make_unique<GayParam>(GayParam::ParamType::Gain);
-    lfoRate3 = std::make_unique<GayParam>(GayParam::ParamType::Frequency);
+    lfoDepth3 		= std::make_unique<GayParam>(GayParam::ParamType::Gain);
+    lfoRate3 		= std::make_unique<GayParam>(GayParam::ParamType::Frequency);
     
-    filtFreq = std::make_unique<GayParam>(GayParam::ParamType::Frequency); // rename this to be freq?
-    filtDrive = std::make_unique<GayParam>(GayParam::ParamType::Gain);
-    filtRes = std::make_unique<GayParam>(GayParam::ParamType::Gain); // rename this type to be normalized?
+    filtFreq 		= std::make_unique<GayParam>(GayParam::ParamType::Frequency); // rename this to be freq?
+    filtDrive 		= std::make_unique<GayParam>(GayParam::ParamType::Gain);
+    filtRes 		= std::make_unique<GayParam>(GayParam::ParamType::Gain); // rename this type to be normalized?
 }
 
 void GayVoice::resetEnvs()
@@ -65,46 +65,41 @@ void GayVoice::resetEnvs()
 //==============================================================================
 void GayVoice::prepare(const juce::dsp::ProcessSpec& spec)
 {
-    prepareMods(spec.sampleRate);
+	osc1->prepare(spec.sampleRate);
+	osc2->prepare(spec.sampleRate);
+	lfo1->prepare(spec.sampleRate);
+	lfo2->prepare(spec.sampleRate);
+	lfo3->prepare(spec.sampleRate);
+	
+	env1.setSampleRate(sampleRate);
+	env2.setSampleRate(sampleRate);
+	env3.setSampleRate(sampleRate);
+	
+	env1.reset();
+	env2.reset();
+	env3.reset();
 
-    osc1->prepare(spec.sampleRate);
-    osc2->prepare(spec.sampleRate);
+    filtFreq.reset(spec.sampleRate, 0.1);
+	filtFreq_LFODepth.reset(spec.sampleRate, 0.1);
+	filtFreq_EnvDepth.reset(spec.sampleRate, 0.1);
+	
+	filtRes.reset(spec.sampleRate, 0.1);
+	filtReson_LFODepth.reset(spec.sampleRate, 0.1);
+	filtReson_EnvDepth.reset(spec.sampleRate, 0.1);
+	
+	filtDrive.reset(spec.sampleRate, 0.1);
+	filtDrive_LFODepth.reset(spec.sampleRate, 0.1);
+	filtDrive_EnvDepth.reset(spec.sampleRate, 0.1);
 
-    filtFreq->prepare(spec.sampleRate);
-    filtRes->prepare(spec.sampleRate);
-    filtDrive->prepare(spec.sampleRate);
-
-    filtFreq->setValue(400.f);
-    filtRes->setValue(0.f);
-    filtDrive->setValue(1.f);
+    filtFreq.setCurrentAndTargetValue(400.f);
+    filtRes->setCurrentAndTargetValue(0.f);
+    filtDrive->setCurrentAndTargetValue(1.f);
 
     filter.prepare(spec);
-    filter.setCutoffFrequencyHz(400.f);
+    filter.setCutoffFrequencyHz(filtFreq.getCurrentValue());
     filter.setMode(juce::dsp::LadderFilter<float>::Mode::LPF24);
 }
 
-void GayVoice::prepareMods(double sampleRate)
-{
-    lfo1->prepare(sampleRate);
-    lfo2->prepare(sampleRate);
-    lfo3->prepare(sampleRate);
-
-    lfoRate1->prepare(sampleRate);
-    lfoRate2->prepare(sampleRate);
-    lfoRate3->prepare(sampleRate);
-
-    lfoDepth1->prepare(sampleRate);
-    lfoDepth2->prepare(sampleRate);
-    lfoDepth3->prepare(sampleRate);
-
-    env1.setSampleRate(sampleRate);
-    env1.reset();
-    env2.setSampleRate(sampleRate);
-    env2.reset();
-    env3.setSampleRate(sampleRate);
-    env3.reset();
-
-}
 
 //==============================================================================
 void GayVoice::noteStarted()
@@ -224,33 +219,7 @@ void GayVoice::incrementFilter()
 void GayVoice::update(AudioProcessorValueTreeState& apvts)
 {
     //////////////////// VOICE ////////////////////
-    auto filterMode = apvts.getRawParameterValue("Filter Mode")->load();
-    updateFilterMode(filterMode);
 
-    // set value on filter params (these are GayParam(s) that exist in the voice class)
-    filtFreq->setValue(apvts.getRawParameterValue("Filter Freq")->load());
-    filtFreq->setLFOScale(apvts.getRawParameterValue("Filter LFO Scale")->load());
-    filtFreq->setEnvScale(apvts.getRawParameterValue("Filter Env Scale")->load());
-
-    filtDrive->setValue(apvts.getRawParameterValue("Filter Drive")->load());
-    filtDrive->setLFOScale(apvts.getRawParameterValue("Drive LFO Scale")->load());
-    filtDrive->setEnvScale(apvts.getRawParameterValue("Drive Env Scale")->load());
-
-    filtRes->setValue(apvts.getRawParameterValue("Filter Res")->load());
-    filtRes->setLFOScale(apvts.getRawParameterValue("Res LFO Scale")->load());
-    filtRes->setEnvScale(apvts.getRawParameterValue("Res Env Scale")->load());
-
-    // assign filter modulation sources (occurs in voice class not oscillator)
-    auto fLFO = apvts.getRawParameterValue("Filter LFO Source")->load();
-    auto fEnv = apvts.getRawParameterValue("Filter Env Source")->load();
-
-    auto dLFO = apvts.getRawParameterValue("Drive LFO Source")->load();
-    auto dEnv = apvts.getRawParameterValue("Drive Env Source")->load();
-
-    auto rLFO = apvts.getRawParameterValue("Res LFO Source")->load();
-    auto rEnv = apvts.getRawParameterValue("Res Env Source")->load();
-
-    assignFilterMods(fLFO, dLFO, rLFO, fEnv, dEnv, rEnv);
 
     // assign LFO modulation sources (envelopes only)
     auto lEnv1 = apvts.getRawParameterValue("LFO Rate Env Source 1")->load();
@@ -264,32 +233,32 @@ void GayVoice::update(AudioProcessorValueTreeState& apvts)
 
     // LFO Params (in voice class)
     auto aRate1 = apvts.getRawParameterValue("LFO Rate 1")->load();
-    auto rateScale1 = apvts.getRawParameterValue("LFO Rate Env Scale 1")->load();
+    auto rateScale1 = apvts.getRawParameterValue("LFO Rate Env Depth 1")->load();
     lfoRate1->setValue(aRate1);
     lfoRate1->setEnvScale(rateScale1);
 
     auto gDepth1 = apvts.getRawParameterValue("LFO Depth 1")->load();
-    auto gainScale1 = apvts.getRawParameterValue("LFO Depth Env Scale 1")->load();
+    auto gainScale1 = apvts.getRawParameterValue("LFO Depth Env Depth 1")->load();
     lfoDepth1->setValue(gDepth1);
     lfoDepth1->setEnvScale(gainScale1);
 
     auto aRate2 = apvts.getRawParameterValue("LFO Rate 2")->load();
-    auto rateScale2 = apvts.getRawParameterValue("LFO Rate Env Scale 2")->load();
+    auto rateScale2 = apvts.getRawParameterValue("LFO Rate Env Depth 2")->load();
     lfoRate2->setValue(aRate2);
     lfoRate2->setEnvScale(rateScale2);
 
     auto gDepth2 = apvts.getRawParameterValue("LFO Depth 2")->load();
-    auto gainScale2 = apvts.getRawParameterValue("LFO Depth Env Scale 2")->load();
+    auto gainScale2 = apvts.getRawParameterValue("LFO Depth Env Depth 2")->load();
     lfoDepth2->setValue(gDepth2);
     lfoDepth2->setEnvScale(gainScale2);
 
     auto aRate3 = apvts.getRawParameterValue("LFO Rate 3")->load();
-    auto rateScale3 = apvts.getRawParameterValue("LFO Rate Env Scale 3")->load();
+    auto rateScale3 = apvts.getRawParameterValue("LFO Rate Env Depth 3")->load();
     lfoRate3->setValue(aRate3);
     lfoRate3->setEnvScale(rateScale3);
 
     auto gDepth3 = apvts.getRawParameterValue("LFO Depth 3")->load();
-    auto gainScale3 = apvts.getRawParameterValue("LFO Depth Env Scale 3")->load();
+    auto gainScale3 = apvts.getRawParameterValue("LFO Depth Env Depth 3")->load();
     lfoDepth3->setValue(gDepth3);
     lfoDepth3->setEnvScale(gainScale1);
 
@@ -318,22 +287,19 @@ void GayVoice::update(AudioProcessorValueTreeState& apvts)
 
     //////////////// OSCILLATORS ///////////////
     
-    osc1->updateGainOffset(apvts.getRawParameterValue("Gain 1")->load());
-    osc1->updateWaveOffset(apvts.getRawParameterValue("Wave 1 Position")->load());
+	// Oscillator Updates to Slider Offsets / LFO Depths / Envelope Scaling
+    osc1->updateGainOffset(apvts.getRawParameterValue("Gain  1")->load());
+    osc1->updateWaveOffset(apvts.getRawParameterValue("Wave  1 Position")->load());
     osc1->updateFreqOffset(apvts.getRawParameterValue("Pitch 1")->load());
     
-    // oscillator 1 params
-    osc1Gain->setValue(apvts.getRawParameterValue("Gain 1")->load());
-    osc1Gain->setLFOScale(apvts.getRawParameterValue("Gain 1 LFO Scale")->load());
-    osc1Gain->setEnvScale(apvts.getRawParameterValue("Gain 1 Env Scale")->load());
+	osc1->updateGainLFODepth(apvts.getRawParameterValue("Gain  1 LFO Depth")->load());
+	osc1->updateWaveLFODepth(apvts.getRawParameterValue("Wave  1 LFO Depth")->load());
+	osc1->updateFreqLFODepth(apvts.getRawParameterValue("Pitch 1 LFO Depth")->load());
 
-    osc1WavePos->setValue(apvts.getRawParameterValue("Wave 1 Position")->load());
-    osc1WavePos->setLFOScale(apvts.getRawParameterValue("Wave 1 LFO Scale")->load());
-    osc1WavePos->setEnvScale(apvts.getRawParameterValue("Wave 1 Env Scale")->load());
+	osc1->updateGainEnvDepth(apvts.getRawParameterValue("Gain  1 Env Depth")->load());
+	osc1->updateWaveEnvDepth(apvts.getRawParameterValue("Wave  1 Env Depth")->load());
+	osc1->updateFreqEnvDepth(apvts.getRawParameterValue("Pitch 1 Env Depth")->load());
 
-    osc1Freq->setOffset(apvts.getRawParameterValue("Pitch 1")->load());
-    osc1Freq->setLFOScale(apvts.getRawParameterValue("Pitch 1 LFO Scale")->load());
-    osc1Freq->setEnvScale(apvts.getRawParameterValue("Pitch 1 Env Scale")->load());
 
 
     
@@ -347,20 +313,8 @@ void GayVoice::update(AudioProcessorValueTreeState& apvts)
 
     auto pLFO1 = apvts.getRawParameterValue("Pitch 1 LFO Source")->load();
     auto pEnv1 = apvts.getRawParameterValue("Pitch 1 Env Source")->load();
-
-
-    // oscillator 2 params
-    auto g2 = apvts.getRawParameterValue("Gain 2")->load();
-    auto gLFOScale2 = apvts.getRawParameterValue("Gain 2 LFO Scale")->load();
-    auto gEnvScale2 = apvts.getRawParameterValue("Gain 2 Env Scale")->load();
-
-    auto w2 = apvts.getRawParameterValue("Wave 2 Position")->load();
-    auto wLFOScale2 = apvts.getRawParameterValue("Wave 2 LFO Scale")->load();
-    auto wEnvScale2 = apvts.getRawParameterValue("Wave 2 Env Scale")->load();
-
-    auto p2 = apvts.getRawParameterValue("Pitch 2")->load();
-    auto pLFOScale2 = apvts.getRawParameterValue("Pitch 2 LFO Scale")->load();
-    auto pEnvScale2 = apvts.getRawParameterValue("Pitch 2 Env Scale")->load();
+	
+	assignOscMods(osc1.get(), gLFO1, wLFO1, pLFO1, gEnv1, wEnv1, pEnv1);
 
 
 
@@ -377,6 +331,40 @@ void GayVoice::update(AudioProcessorValueTreeState& apvts)
     assignOscMods(osc2.get(), gLFO2, wLFO2, pLFO2, gEnv2, wEnv2, pEnv2);
 }
 
+//=====================================
+void GayVoice::updateFilter(AudioProcessorValueTreeState &apvts)
+{
+	auto filterMode = apvts.getRawParameterValue("Filter Mode")->load();
+	updateFilterMode(filterMode);
+
+	// set value on filter params (these are GayParam(s) that exist in the voice class)
+	filtFreq			->setTargetValue(apvts.getRawParameterValue("Filter Freq")->load());
+	filtFreq_LFODepth	->setTargetValue(apvts.getRawParameterValue("Filter LFO Depth")->load());
+	filtFreq_EnvDepth	->setTargetValue(apvts.getRawParameterValue("Filter Env Depth")->load());
+	
+	filtDrive			->setTargetValue(apvts.getRawParameterValue("Filter Drive")->load());
+	filtDrive_LFODepth	->setTargetValue(apvts.getRawParameterValue("Drive LFO Depth")->load());
+	filtDrive_EnvDepth	->setTargetValue(apvts.getRawParameterValue("Drive Env Depth")->load());
+
+	filtRes				->setTargetValue(apvts.getRawParameterValue("Filter Res")->load());
+	filtReson_LFODepth	->setTargetValue(apvts.getRawParameterValue("Res LFO Depth")->load());
+	filtReson_EnvDepth	->setTargetValue(apvts.getRawParameterValue("Res Env Depth")->load());
+
+	// assign filter modulation sources (occurs in voice class not oscillator)
+	auto fLFO = apvts.getRawParameterValue("Filter LFO Source")->load();
+	auto fEnv = apvts.getRawParameterValue("Filter Env Source")->load();
+
+	auto dLFO = apvts.getRawParameterValue("Drive LFO Source")->load();
+	auto dEnv = apvts.getRawParameterValue("Drive Env Source")->load();
+
+	auto rLFO = apvts.getRawParameterValue("Res LFO Source")->load();
+	auto rEnv = apvts.getRawParameterValue("Res Env Source")->load();
+
+	assignFilterMods(fLFO, dLFO, rLFO, fEnv, dEnv, rEnv);
+}
+
+
+//=====================================
 void GayVoice::updateFilterMode(int mode)
 {
     switch (mode)
@@ -408,10 +396,6 @@ void GayVoice::updateFilterMode(int mode)
 // assigning modulators to the oscillators
 void GayVoice::assignOscMods(GayOscillator* osc, int gainLFO, int waveLFO, int freqLFO, int gainEnv, int waveEnv, int freqEnv)
 {
-    
-    auto gain = GayParam::ParamType::Gain;
-    auto wave = GayParam::ParamType::WavePosition;
-    auto freq = GayParam::ParamType::Frequency;
 
     switch (gainLFO)
     {

@@ -30,9 +30,9 @@ void GayOscillator::prepare(double sampleRate)
     waveLFODepth.reset(sampleRate, 0.1);
     freqLFODepth.reset(sampleRate, 0.1);
     
-    gainEnvScale.reset(sampleRate, 0.1);
-    waveEnvScale.reset(sampleRate, 0.1);
-    freqEnvScale.reset(sampleRate, 0.1);
+    gainEnvDepth.reset(sampleRate, 0.1);
+    waveEnvDepth.reset(sampleRate, 0.1);
+    freqEnvDepth.reset(sampleRate, 0.1);
 }
 
 //===================================================
@@ -120,22 +120,22 @@ void GayOscillator::updateFreqLFODepth(float newDepth)
 //********************
 // Parameter modulation by envelope depth values set by slider changes
 //===================================================
-void GayOscillator::updateGainEnvScale(float newScale)
+void GayOscillator::updateGainEnvDepth(float newDepth)
 {
-    gainEnvScale.setTargetValue(newScale);
+    gainEnvDepth.setTargetValue(newDepth);
 }
 
 //===================================================
-void GayOscillator::updateWaveEnvScale(float newScale)
+void GayOscillator::updateWaveEnvDepth(float newDepth)
 {
-    waveEnvScale.setTargetValue(newScale);
+    waveEnvDepth.setTargetValue(newDepth);
 }
 
 
 //===================================================
-void GayOscillator::updateFreqEnvScale(float newScale)
+void GayOscillator::updateFreqEnvDepth(float newDepth)
 {
-    freqEnvScale.setTargetValue(newScale);
+    freqEnvDepth.setTargetValue(newDepth);
 }
 
 
@@ -180,15 +180,15 @@ void GayOscillator::_incrementParameters()
 {
     gainOffset.getNextValue();
     gainLFODepth.getNextValue();
-    gainEnvScale.getNextValue();
+    gainEnvDepth.getNextValue();
     
     freqOffset.getNextValue();
     freqLFODepth.getNextValue();
-    freqEnvScale.getNextValue();
+    freqEnvDepth.getNextValue();
     
     waveOffset.getNextValue();
     waveLFODepth.getNextValue();
-    waveEnvScale.getNextValue();
+    waveEnvDepth.getNextValue();
     
     _applyGainModulation();
     _applyFreqModulation();
@@ -208,7 +208,7 @@ void GayOscillator::_applyGainModulation()
     
     if(gainEnv != nullptr)
     {
-        auto scaledEnvValue = gainEnv->getCurrentValue() * gainEnvScale.getCurrentValue();
+        auto scaledEnvValue = gainEnv->getCurrentValue() * gainEnvDepth.getCurrentValue();
         currentGain = currentGain.get() + scaledEnvValue;
     }
         
@@ -231,7 +231,7 @@ void GayOscillator::_applyFreqModulation()
     
     if(freqEnv != nullptr)
     {
-        auto scaledEnvValue = freqEnv->getCurrentValue() * freqEnvScale.getCurrentValue();
+        auto scaledEnvValue = freqEnv->getCurrentValue() * freqEnvDepth.getCurrentValue();
         auto mappedEnvValue = jmap(scaledEnvValue, 0.f, 1.f, 1.f, 2.f);
         currentFreq = currentFreq.get() + mappedEnvValue;
     }
@@ -250,7 +250,7 @@ void GayOscillator::_applyWaveModulation()
     
     if(waveEnv != nullptr)
     {
-        auto scaledEnvValue = waveEnv->getCurrentValue() * waveEnvScale.getCurrentValue();
+        auto scaledEnvValue = waveEnv->getCurrentValue() * waveEnvDepth.getCurrentValue();
         currentWave = currentWave.get() + scaledEnvValue;
     }
 }

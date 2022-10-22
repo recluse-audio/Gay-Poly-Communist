@@ -67,7 +67,7 @@ public:
 
     void updateFilterMode(int mode);
     
-    
+    void updateFilter(AudioProcessorValueTreeState& apvts);
 
 
    // void incrementFilter()
@@ -80,20 +80,17 @@ public:
     void assignLFOMods(int rateEnv1, int rateEnv2, int rateEnv3, int depthEnv1, int depthEnv2, int depthEnv3);
 
 private:
-   dsp::LadderFilter<float> filter;
-   bool isFiltering = true;
+
 
    std::unique_ptr<GayOscillator> osc1, osc2, lfo1, lfo2, lfo3;
    
    GayADSR env1, env2, env3;
    GayADSR::Parameters envParam1, envParam2, envParam3;
     
-   std::unique_ptr<GayParam> osc1Freq, osc2Freq;
-   std::unique_ptr<GayParam> osc1Gain, osc2Gain;
-   std::unique_ptr<GayParam> osc1WavePos, osc2WavePos;
-   std::unique_ptr<GayParam> filtFreq, filtRes, filtDrive;
-   std::unique_ptr<GayParam> lfoRate1, lfoRate2, lfoRate3;
-   std::unique_ptr<GayParam> lfoDepth1, lfoDepth2, lfoDepth3;
+
+
+
+
 
 
    double glideTime = 0.01;

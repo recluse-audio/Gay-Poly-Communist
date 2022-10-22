@@ -64,4 +64,4 @@ public:
 private:
     juce::OwnedArray<GayParam> mParamArray;
    //ModFriendlyParams::ParameterIds;
-}
+};

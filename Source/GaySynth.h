@@ -34,7 +34,8 @@ public:
         
         for (size_t i = 0; i <= maxNumVoices; ++i)
         {
-            addVoice(new GayVoice(oscVector1, oscVector2, lfoVector1, lfoVector2, lfoVector3));
+            addVoice(new GayVoice(*oscVector1.get(), *oscVector2.get(),
+								  *lfoVector1.get(), *lfoVector2.get(), *lfoVector3.get()));
         }
 
         setVoiceStealingEnabled(true);

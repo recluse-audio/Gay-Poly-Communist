@@ -7,7 +7,7 @@
 */
 
 #include "PluginProcessor.h"
-#include "../Editor/PluginEditor.h"
+#include "PluginEditor.h"
 
 //==============================================================================
 GayPolyCommunistAudioProcessor::GayPolyCommunistAudioProcessor()
@@ -262,83 +262,83 @@ juce::AudioProcessorValueTreeState::ParameterLayout GayPolyCommunistAudioProcess
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate 3", "LFO Rate 3", juce::NormalisableRange<float>(0.0f, 20.0f), 10.f));
 
     // osc params, currently can only assign one lfo and one env to each param
-    // TO DO: add scale params for lfo and env
+    // TO DO: add Depth params for lfo and env
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 1", "Gain 1", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 1 LFO Source", "Gain 1 LFO Source", 0.f, 3.f, 0.f));// 0 = no modulator1
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 1 LFO Scale", "Gain 1 LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 1 LFO Depth", "Gain 1 LFO Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 1 Env Source", "Gain 1 Env Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 1 Env Scale", "Gain 1 Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 1 Env Depth", "Gain 1 Env Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 1", "Pitch 1", NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 1 LFO Source", "Pitch 1 LFO Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 1 LFO Scale", "Pitch 1 LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 1 LFO Depth", "Pitch 1 LFO Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 1 Env Source", "Pitch 1 Env Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 1 Env Scale", "Pitch 1 Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 1 Env Depth", "Pitch 1 Env Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 Position", "Wave 1 Position", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.1f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 LFO Source", "Wave 1 LFO Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 LFO Scale", "Wave 1 LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 LFO Depth", "Wave 1 LFO Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 Env Source", "Wave 1 Env Source", 0, 3, 0));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 Env Scale", "Wave 1 Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 1 Env Depth", "Wave 1 Env Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 2", "Gain 2", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 2 LFO Source", "Gain 2 LFO Source", 0.f, 3.f, 0.f));// 0 = no modulator1
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 2 LFO Scale", "Gain 2 LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 2 LFO Depth", "Gain 2 LFO Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 2 Env Source", "Gain 2 Env Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 2 Env Scale", "Gain 2 Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Gain 2 Env Depth", "Gain 2 Env Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 2", "Pitch 2", NormalisableRange<float>(-1.0f, 1.0f, 0.001f), 0.f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 2 LFO Source", "Pitch 2 LFO Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 2 LFO Scale", "Pitch 2 LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 2 LFO Depth", "Pitch 2 LFO Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 2 Env Source", "Pitch 2 Env Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 2 Env Scale", "Pitch 2 Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Pitch 2 Env Depth", "Pitch 2 Env Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 Position", "Wave 2 Position", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.65f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 LFO Source", "Wave 2 LFO Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 LFO Scale", "Wave 2 LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 LFO Depth", "Wave 2 LFO Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 Env Source", "Wave 2 Env Source", 0, 3, 0));
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 Env Scale", "Wave 2 Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Wave 2 Env Depth", "Wave 2 Env Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
 
     // Filter params (held in voice class rather than individual oscillators
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter Freq", "Filter Freq", NormalisableRange<float>(100.0f, 15000.0f, 0.001f, 0.5f), 500.f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter LFO Source", "Filter LFO Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter LFO Scale", "Filter LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter LFO Depth", "Filter LFO Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter Env Source", "Filter Env Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter Env Scale", "Filter Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter Env Depth", "Filter Env Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter Res", "Filter Res", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Res LFO Source", "Res LFO Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Res LFO Scale", "Res LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Res LFO Depth", "Res LFO Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Res Env Source", "Res Env Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Res Env Scale", "Res Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Res Env Depth", "Res Env Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter Drive", "Filter Drive", NormalisableRange<float>(1.0f, 10.0f, 0.001f), 1.f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Drive LFO Source", "Drive LFO Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Drive LFO Scale", "Drive LFO Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Drive LFO Depth", "Drive LFO Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Drive Env Source", "Drive Env Source", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("Drive Env Scale", "Drive Env Scale", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("Drive Env Depth", "Drive Env Depth", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("Filter Mode", "Filter Mode", 0.f, 2.f, 1.f));// 1 = LPF
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate Env Source 1", "LFO Rate Env Source 1", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate Env Scale 1", "LFO Rate Env Scale 1", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate Env Depth 1", "LFO Rate Env Depth 1", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate Env Source 2", "LFO Rate Env Source 2", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate Env Scale 2", "LFO Rate Env Scale 2", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate Env Depth 2", "LFO Rate Env Depth 2", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
     
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate Env Source 3", "LFO Rate Env Source 3", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate Env Scale 3", "LFO Rate Env Scale 3", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Rate Env Depth 3", "LFO Rate Env Depth 3", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth Env Source 1", "LFO Depth Env Source 1", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth Env Scale 1", "LFO Depth Env Scale 1", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth Env Depth 1", "LFO Depth Env Depth 1", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth Env Source 2", "LFO Depth Env Source 2", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth Env Scale 2", "LFO Depth Env Scale 2", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth Env Depth 2", "LFO Depth Env Depth 2", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
     params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth Env Source 3", "LFO Depth Env Source 3", 0, 3, 0));// 0 = no modulator
-    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth Env Scale 3", "LFO Depth Env Scale 3", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
+    params.push_back(std::make_unique<juce::AudioParameterFloat>("LFO Depth Env Depth 3", "LFO Depth Env Depth 3", NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.5f));
 
     return { params.begin(), params.end() };
 }

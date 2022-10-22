@@ -63,9 +63,9 @@ public:
     void updateFreqLFODepth(float newDepth);
     
     // Depth of Envelope modulation (set by sliders)
-    void updateGainEnvScale(float newScale);
-    void updateWaveEnvScale(float newScale);
-    void updateFreqEnvScale(float newScale);
+    void updateGainEnvDepth(float newDepth);
+    void updateWaveEnvDepth(float newDepth);
+    void updateFreqEnvDepth(float newDepth);
     
     // Assign modulating LFO to a parameter
     void assignGainLFO(GayOscillator* lfo);
@@ -100,9 +100,9 @@ private:
     juce::SmoothedValue<float> freqLFODepth;
     
     // Depth of Envelope modulation (set by sliders)
-    juce::SmoothedValue<float> gainEnvScale;
-    juce::SmoothedValue<float> waveEnvScale;
-    juce::SmoothedValue<float> freqEnvScale;
+    juce::SmoothedValue<float> gainEnvDepth;
+    juce::SmoothedValue<float> waveEnvDepth;
+    juce::SmoothedValue<float> freqEnvDepth;
     
     juce::Atomic<float> currentGain   { 0.f };
     juce::Atomic<float> currentFreq   { 0.f };
